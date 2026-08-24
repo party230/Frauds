@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%2307080b'/><text x='16' y='23' font-size='20' font-family='Arial' font-weight='bold' text-anchor='middle' fill='%23d9b25c'>F</text></svg>">
+<title>Official Fraud Rankings — #1 Fraud Verse Leaderboard</title>
+<meta name="description" content="The definitive daily leaderboard tracking the rise and fall of the most influential Frauds across the verse in culture, business and media.">
+</head>
+<body>
+<div class="ticker-bar"><div class="ticker-track"></div></div>
+
+<header class="site-head">
+  <div class="wrap head-inner">
+    <a class="brand" href="index.html">
+      <span class="brand-mark">F</span>
+      <span class="brand-txt">
+        <span class="b1">Official <em>Fraud</em> Rankings</span>
+        <span class="b2">The Fraud Verse Leaderboard</span>
+      </span>
+    </a>
+    <nav class="nav">
+      <a href="index.html">Rankings</a>
+      <a href="about.html">Methodology</a>
+      <a href="index.html#membership">Membership</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <a class="btn btn-gold btn-sm head-cta" href="contact.html#submit">Submit a Fraud</a>
+    <button class="burger" type="button" aria-label="Menu">&#9776;</button>
+  </div>
+</header>
+<main>
+<section class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Cycle 41 &middot; Updated every 48 hours</div>
+    <h1>Official <em>Fraud</em> Rankings</h1>
+    <p>The definitive daily leaderboard tracking the rise and fall of the most influential Frauds across the verse &mdash; in culture, business and media. Ten qualities. Even weighting. No favours.</p>
+    <div class="hero-actions">
+      <a class="btn btn-gold" href="#board-section">View the board</a>
+      <a class="btn" href="about.html">How grading works</a>
+    </div>
+    <div class="stat-strip" id="stat-strip"></div>
+  </div>
+</section>
+
+<section class="section" id="podium">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>The Top Three</h2>
+      <span class="rule"></span>
+      <p>Highest aggregate grades on the board this cycle</p>
+    </div>
+    <div class="podium" id="podium-host"></div>
+  </div>
+</section>
+
+<section class="section" id="board-section" style="padding-top:0">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>The Full Board</h2>
+      <span class="rule"></span>
+      <p>Click any Fraud for the full quality breakdown</p>
+    </div>
+
+    <div class="controls">
+      <label class="field">
+        <span class="ic">&#9906;</span>
+        <input id="search" type="search" placeholder="Search name, handle or region" aria-label="Search the board">
+      </label>
+      <label class="field">
+        <select id="sort" aria-label="Sort the board">
+          <option value="rank">Sort: Rank</option>
+          <option value="movers">Sort: Biggest risers</option>
+          <option value="fallers">Sort: Biggest fallers</option>
+          <option value="newest">Sort: Newest entrants</option>
+          <option value="name">Sort: Name</option>
+        </select>
+      </label>
+      <div class="chip-row">
+        <button class="chip on" data-tier="all" type="button">All</button>
+        <button class="chip" data-tier="mythic" type="button">Mythic</button>
+        <button class="chip" data-tier="elite" type="button">Elite</button>
+        <button class="chip" data-tier="ascending" type="button">Ascending</button>
+        <button class="chip" data-tier="contender" type="button">Contender</button>
+        <button class="chip" data-tier="prospect" type="button">Prospect</button>
+      </div>
+    </div>
+
+    <div class="board">
+      <div class="board-head">
+        <div>Rank</div><div>Move</div><div>Fraud</div><div>Grade</div><div>Tier</div><div>Community</div>
+      </div>
+      <div id="board"></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="membership" style="padding-top:0">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Membership</h2>
+      <span class="rule"></span>
+      <p>Back the board, nominate figures, see the numbers behind every grade</p>
+    </div>
+    <div class="grid-3">
+      <div class="card plan">
+        <div class="num-tag">Tier 01</div>
+        <h3>Spectator</h3>
+        <div class="price">Free<small> / forever</small></div>
+        <ul>
+          <li>Full public board every cycle</li>
+          <li>Rising star and overrated voting</li>
+          <li>Quality breakdown on every profile</li>
+        </ul>
+        <a class="btn btn-block" href="index.html#board-section">You are here</a>
+      </div>
+      <div class="card plan feature">
+        <div class="num-tag">Tier 02 &middot; Most popular</div>
+        <h3>Verified</h3>
+        <div class="price">$9<small> / month</small></div>
+        <ul>
+          <li>Everything in Spectator</li>
+          <li>Nominate a Fraud for review each cycle</li>
+          <li>Grade history and cycle-by-cycle movement</li>
+          <li>Panel notes released 24 hours early</li>
+        </ul>
+        <a class="btn btn-gold btn-block" href="contact.html#submit">Join Verified</a>
+      </div>
+      <div class="card plan">
+        <div class="num-tag">Tier 03</div>
+        <h3>Panel Access</h3>
+        <div class="price">$29<small> / month</small></div>
+        <ul>
+          <li>Everything in Verified</li>
+          <li>Raw per-quality scoring sheets</li>
+          <li>Priority submissions and grade appeals</li>
+          <li>Direct line to the ranking panel</li>
+        </ul>
+        <a class="btn btn-block" href="contact.html">Request access</a>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+<footer class="site-foot">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <h4>Official Fraud Rankings</h4>
+        <p>The definitive daily leaderboard tracking the rise and fall of the most influential Frauds across the verse in culture, business and media.</p>
+        <p>Board refreshed every 48 hours. Cycle 41.</p>
+      </div>
+      <div>
+        <h4>The Board</h4>
+        <a href="index.html">Full rankings</a>
+        <a href="index.html#podium">Top three</a>
+        <a href="index.html#membership">Membership</a>
+      </div>
+      <div>
+        <h4>How it works</h4>
+        <a href="about.html#qualities">The ten qualities</a>
+        <a href="about.html#tiers">Tier structure</a>
+        <a href="about.html#faq">FAQ</a>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <a href="contact.html">General enquiries</a>
+        <a href="contact.html#submit">Submit a Fraud</a>
+        <a href="contact.html#appeal">Appeal a grade</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>&copy; <span id="year">2026</span> Official Fraud Rankings. All rights reserved.</span>
+      <span>Satirical parody &middot; All ranked figures are fictional</span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>
