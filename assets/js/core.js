@@ -16,8 +16,13 @@ function tierOf(score) {
   return              { key: 'prospect',  label: 'Prospect'  };
 }
 
-/* The ranked field, highest aggregate first. */
+/* The ranked field, highest aggregate first.
+ * When the backend served the dataset the rows already carry score, rank,
+ * tier and live sentiment; the local maths is the offline path. */
 function rankedField() {
+  if (FRAUDS.length && FRAUDS[0].rank != null) {
+    return FRAUDS.slice().sort((a, b) => a.rank - b.rank).map(f => ({ ...f }));
+  }
   return FRAUDS
     .map(f => ({ ...f, score: overall(f), tier: tierOf(overall(f)) }))
     .sort((a, b) => b.score - a.score)
@@ -29,7 +34,29 @@ function byId(id) {
 }
 
 function regions() {
+  if (REGIONS.length) return REGIONS.slice();
   return Array.from(new Set(FRAUDS.map(f => f.region.split(', ').pop()))).sort();
+}
+
+/* ---------- dataset wiring ---------- *
+ * data.js ships a bundled copy for the static fallback; when the backend
+ * answers, its payload replaces it wholesale.
+ */
+var REGIONS = [];
+
+function applyDataset(payload) {
+  if (payload.categories) CATEGORIES = payload.categories;
+  if (payload.frauds) FRAUDS = payload.frauds;
+  if (payload.plans) PLANS = payload.plans;
+  if (payload.news) NEWS = payload.news;
+  if (payload.regions) REGIONS = payload.regions;
+  if (payload.cycle) CURRENT_CYCLE = payload.cycle;
+}
+
+/* Fold a fresh tally from the server back into the cached board. */
+function applySentiment(fraudId, tally) {
+  const f = FRAUDS.find(x => x.id === fraudId);
+  if (f) f.sentiment = tally;
 }
 
 /* Deterministic 12-cycle rank history ending on the current position.
@@ -54,8 +81,10 @@ function rankHistory(fraud, size) {
   return out;
 }
 
-/* Deterministic community split so the figure is stable between visits. */
+/* Community split. The backend returns real tallies; offline this is the
+ * deterministic baseline the seed data was built from. */
 function sentiment(fraud) {
+  if (fraud && fraud.sentiment) return fraud.sentiment;
   const seed = fraud.id.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
   const base = 52 + ((seed * 7 + Math.round(overall(fraud))) % 44);
   return { rise: base, over: 100 - base };
@@ -87,4 +116,4 @@ function planById(id) {
   return PLANS.find(p => p.id === id) || PLANS[0];
 }
 
-const CURRENT_CYCLE = 41;
+var CURRENT_CYCLE = 41;

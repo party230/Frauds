@@ -3,7 +3,7 @@
  * All figures below are fictional.
  */
 
-const CATEGORIES = [
+var CATEGORIES = [
   { key: 'height',        label: 'Height',            blurb: 'Raw verticality and standing presence.' },
   { key: 'frame',         label: 'Body Frame',        blurb: 'Shoulder width, clavicular structure, natural build.' },
   { key: 'transformation',label: 'Transformation',    blurb: 'Weight loss, muscle gain, grooming and facial refinement over time.' },
@@ -16,7 +16,7 @@ const CATEGORIES = [
   { key: 'longevity',     label: 'Longevity',         blurb: 'Staying power and consistency across ranking cycles.' }
 ];
 
-const FRAUDS = [
+var FRAUDS = [
   {
     id: 'f001', name: 'Baron Vexley', handle: '@baronvexley', region: 'Miami, FL', age: 27,
     joined: 'Jan 2024', movement: 0, peak: 1, weeks: 41,
@@ -188,7 +188,7 @@ const FRAUDS = [
 ];
 
 /* ---------- membership plans ---------- */
-const PLANS = [
+var PLANS = [
   {
     id: 'spectator', name: 'Spectator', price: 0, level: 0,
     blurb: 'The public board, free forever.',
@@ -224,7 +224,7 @@ const PLANS = [
 ];
 
 /* ---------- cycle reports ---------- */
-const NEWS = [
+var NEWS = [
   {
     id: 'c41', cycle: 41, date: '24 August 2026', tag: 'Cycle report',
     title: 'Locke breaks the top ten as Reyes posts the steepest fall on record',

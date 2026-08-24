@@ -17,7 +17,7 @@ const FEATURES = [
   ['Direct line to the ranking panel',        2]
 ];
 
-document.addEventListener('DOMContentLoaded', () => {
+App.ready(() => {
   const host = document.getElementById('plans');
   if (!host) return;
   host.innerHTML = PLANS.map(planCardMarkup).join('');

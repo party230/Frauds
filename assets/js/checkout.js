@@ -5,7 +5,7 @@
    choosing a plan writes it to this browser's membership record.
    ============================================================ */
 
-document.addEventListener('DOMContentLoaded', () => {
+App.ready(() => {
   const host = document.getElementById('checkout');
   if (!host) return;
 
@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const fail = msg => { err.textContent = msg; err.classList.add('show'); };
 
-  form.addEventListener('submit', ev => {
+  form.addEventListener('submit', async ev => {
     ev.preventDefault();
     err.classList.remove('show');
 
@@ -94,8 +94,34 @@ document.addEventListener('DOMContentLoaded', () => {
     if (expiry < new Date()) return fail('That card has expired.');
     if (cvc.value.length < 3) return fail('Enter the three or four digit security code.');
 
-    const p = price();
-    Store.setPlan(plan.id);
+    const submit = form.querySelector('button[type=submit]');
+    submit.disabled = true;
+    submit.textContent = 'Completing…';
+
+    /* The card is validated and charged nowhere: the server keeps only the
+       brand and last four digits against the order. */
+    let res;
+    try {
+      res = await Store.checkout({
+        plan: plan.id,
+        billing: cycle.value,
+        cardName: form.cardname.value.trim(),
+        card: card.value,
+        exp: exp.value,
+        cvc: cvc.value,
+        postcode: form.zip.value.trim()
+      });
+    } catch (e) {
+      submit.disabled = false;
+      submit.textContent = 'Complete order';
+      if (e.code === 'unauthorized') return apiFail(e);
+      if (e.field && form[e.field === 'cardName' ? 'cardname' : e.field]) {
+        form[e.field === 'cardName' ? 'cardname' : e.field].focus();
+      }
+      return fail(e.message);
+    }
+
+    const order = res.order;
     renderHeader();
 
     host.innerHTML = `
@@ -103,13 +129,13 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="card success-card">
           <div class="tick">&#10003;</div>
           <div class="num-tag">Order complete</div>
-          <h2>You are ${plan.name}</h2>
-          <p>$${p.total}.00 charged ${p.yearly ? 'yearly' : 'monthly'} to the card ending ${card.value.slice(-4)}. Your new benefits are live from this cycle.</p>
+          <h2>You are ${order.planName}</h2>
+          <p>$${(order.amountCents / 100).toFixed(2)} charged ${order.billing === 'year' ? 'yearly' : 'monthly'} to the ${order.cardBrand} ending ${order.cardLast4}. Your new benefits are live from this cycle.</p>
           <div class="kv" style="margin:20px 0">
-            <div><span>Plan</span><span>${plan.name}</span></div>
+            <div><span>Plan</span><span>${order.planName}</span></div>
             <div><span>Account</span><span>${Store.session().email}</span></div>
-            <div><span>Next charge</span><span>${nextCharge(p.yearly)}</span></div>
-            <div><span>Reference</span><span>OFR-${CURRENT_CYCLE}-${Math.floor(Math.random() * 90000 + 10000)}</span></div>
+            <div><span>Next charge</span><span>${formatDate(order.nextCharge)}</span></div>
+            <div><span>Reference</span><span>${order.id}</span></div>
           </div>
           <div class="profile-actions">
             <a class="btn btn-gold btn-sm" href="account.html">Go to your dashboard</a>
@@ -118,12 +144,11 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       </div>`;
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    toast('Membership active: ' + plan.name + '.');
+    toast('Membership active: ' + order.planName + '.');
   });
 });
 
-function nextCharge(yearly) {
-  const d = new Date();
-  if (yearly) d.setFullYear(d.getFullYear() + 1); else d.setMonth(d.getMonth() + 1);
-  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+function formatDate(iso) {
+  const d = new Date(iso + 'T00:00:00');
+  return isNaN(d) ? iso : d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 }

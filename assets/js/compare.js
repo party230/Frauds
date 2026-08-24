@@ -2,7 +2,7 @@
    OFFICIAL FRAUD RANKINGS — head to head
    ============================================================ */
 
-document.addEventListener('DOMContentLoaded', () => {
+App.ready(() => {
   const host = document.getElementById('compare');
   if (!host) return;
 

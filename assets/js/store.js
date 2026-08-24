@@ -1,122 +1,255 @@
 /* ============================================================
-   OFFICIAL FRAUD RANKINGS — client-side store
+   OFFICIAL FRAUD RANKINGS — member state
    ------------------------------------------------------------
-   Everything a member does lives in this browser: session,
-   membership plan, watchlist, votes and nominations. There is no
-   backend behind this site, so the store is the source of truth.
+   Backed by the API when the Node backend is serving the site. If the
+   site is served as plain static files (no backend), the store falls
+   back to this browser's localStorage so everything still works — the
+   difference is announced by Store.offline.
    ============================================================ */
 
 const Store = (() => {
   const KEY = 'ofr.state.v2';
-  const LEGACY_VOTES = 'ofr.votes.v1';
 
   const blank = () => ({
-    session: null,          /* { name, email, plan, joined } */
-    watchlist: [],          /* fraud ids */
-    votes: {},              /* fraudId -> 'rise' | 'over' */
-    nominations: [],        /* { name, handle, region, quality, note, cycle, status } */
-    appeals: []             /* { fraudId, quality, note, cycle, status } */
+    user: null,
+    watchlist: [],
+    votes: {},
+    nominations: [],
+    appeals: [],
+    orders: [],
+    nominationsThisCycle: 0
   });
 
-  function read() {
-    let state;
-    try { state = JSON.parse(localStorage.getItem(KEY)); }
-    catch (e) { state = null; }
-    state = Object.assign(blank(), state || {});
+  let state = blank();
+  let offline = false;
+  const listeners = [];
+  const notify = () => listeners.forEach(fn => fn(state));
 
-    /* carry over votes cast before the store existed */
-    if (!Object.keys(state.votes).length) {
-      try {
-        const old = JSON.parse(localStorage.getItem(LEGACY_VOTES));
-        if (old) state.votes = old;
-      } catch (e) { /* ignore */ }
-    }
+  /* ---------- offline persistence ---------- */
+  function readLocal() {
+    try {
+      const raw = JSON.parse(localStorage.getItem(KEY));
+      if (!raw) return blank();
+      /* the pre-backend shape kept the account under `session` */
+      const user = raw.user || (raw.session ? {
+        name: raw.session.name, email: raw.session.email,
+        plan: raw.session.plan, joined: raw.session.joined
+      } : null);
+      return Object.assign(blank(), raw, { user: user });
+    } catch (e) { return blank(); }
+  }
+
+  function writeLocal() {
+    if (!offline) return;
+    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { /* private mode */ }
+  }
+
+  function apply(member) {
+    state = Object.assign(blank(), member || {});
+    state.nominationsThisCycle = state.nominations.filter(n => n.cycle === CURRENT_CYCLE).length;
+    writeLocal();
+    notify();
     return state;
   }
 
-  let state = read();
-  const listeners = [];
-
-  function persist() {
-    try { localStorage.setItem(KEY, JSON.stringify(state)); }
-    catch (e) { /* private browsing — state stays in memory */ }
-    listeners.forEach(fn => fn(state));
+  function requireUser() {
+    if (!state.user) throw new ApiError(401, { error: { code: 'unauthorized', message: 'Sign in to continue.' } });
   }
 
   return {
+    get offline() { return offline; },
     get: () => state,
     on(fn) { listeners.push(fn); return fn; },
 
-    /* ----- session ----- */
-    session: () => state.session,
-    isSignedIn: () => !!state.session,
-    plan: () => planById(state.session ? state.session.plan : 'spectator'),
+    /* ---------- boot ---------- */
+    async boot() {
+      try {
+        const data = await Api.get('/bootstrap');
+        applyDataset(data);
+        const me = await Api.get('/auth/me');
+        apply(me.user ? me : null);
+      } catch (e) {
+        /* no backend: bundled dataset plus whatever this browser remembers */
+        offline = true;
+        Api.offline = true;
+        state = readLocal();
+        state.nominationsThisCycle = state.nominations.filter(n => n.cycle === CURRENT_CYCLE).length;
+        notify();
+      }
+      return state;
+    },
+
+    /* ---------- session ---------- */
+    session: () => state.user,
+    isSignedIn: () => !!state.user,
+    plan: () => planById(state.user ? state.user.plan : 'spectator'),
     hasLevel(level) { return this.plan().level >= level; },
 
-    signIn(email, name, plan) {
-      state.session = {
-        name: name || email.split('@')[0].replace(/[._-]+/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
-        email: email,
-        plan: plan || (state.session && state.session.plan) || 'spectator',
-        joined: (state.session && state.session.joined) || new Date().toISOString().slice(0, 10)
-      };
-      persist();
-      return state.session;
+    async signIn(email, password) {
+      if (offline) {
+        state.user = { name: nameFromEmail(email), email: email, plan: state.user ? state.user.plan : 'spectator',
+                       joined: new Date().toISOString().slice(0, 10) };
+        writeLocal(); notify();
+        return state;
+      }
+      return apply(await Api.post('/auth/login', { email, password }));
     },
 
-    signOut() { state.session = null; persist(); },
-
-    setPlan(planId) {
-      if (!state.session) return null;
-      state.session.plan = planId;
-      persist();
-      return state.session;
+    async signUp(name, email, password, confirm, terms) {
+      if (offline) {
+        state = blank();
+        state.user = { name: name, email: email, plan: 'spectator', joined: new Date().toISOString().slice(0, 10) };
+        writeLocal(); notify();
+        return state;
+      }
+      return apply(await Api.post('/auth/signup', { name, email, password, confirm, terms }));
     },
 
-    /* ----- watchlist ----- */
+    async signOut() {
+      if (!offline) { try { await Api.post('/auth/logout'); } catch (e) { /* already gone */ } }
+      state = blank();
+      writeLocal();
+      notify();
+    },
+
+    async updateAccount(name, email) {
+      requireUser();
+      if (offline) {
+        state.user = Object.assign({}, state.user, { name, email });
+        writeLocal(); notify();
+        return state;
+      }
+      return apply(await Api.patch('/auth/me', { name, email }));
+    },
+
+    async deleteAccount() {
+      if (!offline) { try { await Api.del('/auth/me'); } catch (e) { /* already gone */ } }
+      try { localStorage.removeItem(KEY); } catch (e) { /* ignore */ }
+      state = blank();
+      notify();
+    },
+
+    /* ---------- watchlist ---------- */
     watchlist: () => state.watchlist.slice(),
     isWatched: id => state.watchlist.indexOf(id) > -1,
 
-    toggleWatch(id) {
-      const i = state.watchlist.indexOf(id);
-      if (i > -1) { state.watchlist.splice(i, 1); persist(); return false; }
+    async toggleWatch(id) {
+      requireUser();
+      const on = state.watchlist.indexOf(id) > -1;
 
-      const cap = Store.hasLevel(1) ? Infinity : 5;
-      if (state.watchlist.length >= cap) return 'full';
-      state.watchlist.push(id);
-      persist();
-      return true;
+      if (offline) {
+        if (on) state.watchlist = state.watchlist.filter(x => x !== id);
+        else {
+          if (!this.hasLevel(1) && state.watchlist.length >= 5) {
+            throw new ApiError(403, { error: { code: 'watchlist_full', message: 'Spectator members can watch up to five Frauds.' } });
+          }
+          state.watchlist.push(id);
+        }
+        writeLocal(); notify();
+        return !on;
+      }
+
+      const res = on ? await Api.del('/watchlist/' + id) : await Api.put('/watchlist/' + id);
+      state.watchlist = res.watchlist;
+      notify();
+      return res.watching;
     },
 
-    /* ----- votes ----- */
+    /* ---------- votes ---------- */
     votes: () => Object.assign({}, state.votes),
     voteFor: id => state.votes[id] || null,
 
-    castVote(id, kind) {
-      state.votes[id] = state.votes[id] === kind ? null : kind;
-      if (!state.votes[id]) delete state.votes[id];
-      persist();
-      return state.votes[id] || null;
+    async castVote(id, kind) {
+      requireUser();
+      if (offline) {
+        state.votes[id] = state.votes[id] === kind ? null : kind;
+        if (!state.votes[id]) delete state.votes[id];
+        writeLocal(); notify();
+        return { vote: state.votes[id] || null, sentiment: sentiment(byId(id)) };
+      }
+
+      const res = await Api.post('/votes', { fraudId: id, kind: kind });
+      if (res.vote) state.votes[id] = res.vote; else delete state.votes[id];
+      applySentiment(id, res.sentiment);
+      notify();
+      return res;
     },
 
-    /* ----- nominations and appeals ----- */
+    /* ---------- nominations and appeals ---------- */
     nominations: () => state.nominations.slice(),
-    nominationsThisCycle: () => state.nominations.filter(n => n.cycle === CURRENT_CYCLE).length,
+    nominationsThisCycle: () => state.nominationsThisCycle,
+    orders: () => state.orders.slice(),
 
-    addNomination(nom) {
-      state.nominations.unshift(Object.assign({ cycle: CURRENT_CYCLE, status: 'Under review' }, nom));
-      persist();
-      return state.nominations[0];
+    async addNomination(nom) {
+      requireUser();
+      if (offline) {
+        const row = Object.assign({ cycle: CURRENT_CYCLE, status: 'Under review' }, nom);
+        state.nominations.unshift(row);
+        state.nominationsThisCycle++;
+        writeLocal(); notify();
+        return { nomination: row, earliestEntry: CURRENT_CYCLE + 2 };
+      }
+      const res = await Api.post('/nominations', nom);
+      state.nominations.unshift(res.nomination);
+      state.nominationsThisCycle++;
+      notify();
+      return res;
     },
 
     appeals: () => state.appeals.slice(),
 
-    addAppeal(appeal) {
-      state.appeals.unshift(Object.assign({ cycle: CURRENT_CYCLE, status: 'Filed' }, appeal));
-      persist();
-      return state.appeals[0];
+    async addAppeal(appeal) {
+      requireUser();
+      if (offline) {
+        const row = Object.assign({ cycle: CURRENT_CYCLE, status: 'Logged' }, appeal);
+        state.appeals.unshift(row);
+        writeLocal(); notify();
+        return { appeal: row, priority: this.hasLevel(2) };
+      }
+      const res = await Api.post('/appeals', appeal);
+      state.appeals.unshift(res.appeal);
+      notify();
+      return res;
     },
 
-    reset() { state = blank(); persist(); }
+    /* ---------- membership ---------- */
+    async checkout(order) {
+      requireUser();
+      if (offline) {
+        state.user = Object.assign({}, state.user, { plan: order.plan });
+        writeLocal(); notify();
+        const plan = planById(order.plan);
+        const months = order.billing === 'year' ? 10 : 1;
+        return { order: {
+          id: 'ord_local', plan: plan.id, planName: plan.name, billing: order.billing,
+          amountCents: plan.price * months * 100, cardBrand: 'Card',
+          cardLast4: String(order.card || '').replace(/\D/g, '').slice(-4),
+          nextCharge: nextChargeDate(order.billing)
+        } };
+      }
+      const res = await Api.post('/checkout', order);
+      apply(res.member);
+      return res;
+    },
+
+    async cancelPlan() {
+      requireUser();
+      if (offline) {
+        state.user = Object.assign({}, state.user, { plan: 'spectator' });
+        writeLocal(); notify();
+        return state;
+      }
+      return apply(await Api.post('/membership/cancel'));
+    }
   };
+
+  function nameFromEmail(email) {
+    return email.split('@')[0].replace(/[._-]+/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+  }
+
+  function nextChargeDate(billing) {
+    const d = new Date();
+    if (billing === 'year') d.setFullYear(d.getFullYear() + 1); else d.setMonth(d.getMonth() + 1);
+    return d.toISOString().slice(0, 10);
+  }
 })();

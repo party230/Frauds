@@ -2,7 +2,7 @@
    OFFICIAL FRAUD RANKINGS — member dashboard
    ============================================================ */
 
-document.addEventListener('DOMContentLoaded', () => {
+App.ready(() => {
   const host = document.getElementById('account');
   if (!host) return;
 
@@ -27,6 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function render() {
     const s = Store.session();
+    if (!s) return;                     /* signing out re-notifies while we navigate away */
     const plan = Store.plan();
     const field = rankedField();
 
@@ -99,6 +100,18 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>`).join('')}</div>`
       : `<div class="empty"><p>No nominations filed yet.</p><a class="btn btn-sm" href="submit.html">Nominate a Fraud</a></div>`;
 
+    /* ----- orders ----- */
+    const orders = Store.orders();
+    const oh = document.getElementById('orders');
+    if (oh) {
+      oh.innerHTML = orders.length
+        ? `<div class="kv kv-list">${orders.map(o => {
+            const p = planById(o.plan);
+            return `<div><span>${p.name} · ${o.billing === 'year' ? 'Yearly' : 'Monthly'} <em class="dim">${o.cardBrand} ····${o.cardLast4}</em></span><span>$${(o.amountCents / 100).toFixed(2)} · ${o.createdAt.slice(0, 10)}</span></div>`;
+          }).join('')}</div>`
+        : '<div class="empty"><p>No membership charges on this account.</p></div>';
+    }
+
     /* ----- appeals ----- */
     const appeals = Store.appeals();
     document.getElementById('appeals').innerHTML = appeals.length
@@ -113,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const settings = document.getElementById('settings-form');
   settings.name_.value = Store.session().name;
   settings.email_.value = Store.session().email;
-  settings.addEventListener('submit', ev => {
+  settings.addEventListener('submit', async ev => {
     ev.preventDefault();
     const name = settings.name_.value.trim();
     const email = settings.email_.value.trim();
@@ -121,25 +134,34 @@ document.addEventListener('DOMContentLoaded', () => {
       toast('Check the name and email before saving.', 'bad');
       return;
     }
-    Store.signIn(email, name);
-    renderHeader();
-    render();
-    toast('Account details saved.');
+    try {
+      await Store.updateAccount(name, email);
+      renderHeader();
+      render();
+      toast('Account details saved.');
+    } catch (err) {
+      apiFail(err, 'Those details could not be saved.');
+    }
   });
 
-  document.getElementById('sign-out').addEventListener('click', () => {
-    Store.signOut();
+  document.getElementById('sign-out').addEventListener('click', async () => {
+    await Store.signOut();
     toast('Signed out.');
     location.href = 'index.html';
   });
 
   document.getElementById('reset-data').addEventListener('click', () => {
-    modal('Clear everything stored in this browser?',
-      '<p>This removes your account, watchlist, votes, nominations and appeals from this device. It cannot be undone.</p>',
-      '<button class="btn" data-close type="button">Keep my data</button><button class="btn btn-danger" id="confirm-reset" type="button">Clear it all</button>')
-      .el.querySelector('#confirm-reset').addEventListener('click', () => {
-        Store.reset();
-        location.href = 'index.html';
+    const where = Store.offline ? 'from this browser' : 'from the board';
+    modal('Delete your account?',
+      `<p>This removes your account, watchlist, votes, nominations and appeals ${where}. It cannot be undone.</p>`,
+      '<button class="btn" data-close type="button">Keep my account</button><button class="btn btn-danger" id="confirm-reset" type="button">Delete everything</button>')
+      .el.querySelector('#confirm-reset').addEventListener('click', async () => {
+        try {
+          await Store.deleteAccount();
+          location.href = 'index.html';
+        } catch (err) {
+          apiFail(err, 'The account could not be deleted.');
+        }
       });
   });
 });

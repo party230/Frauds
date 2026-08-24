@@ -2,7 +2,7 @@
    OFFICIAL FRAUD RANKINGS — home page
    ============================================================ */
 
-document.addEventListener('DOMContentLoaded', () => {
+App.ready(() => {
   const field = rankedField();
 
   /* ----- headline numbers ----- */

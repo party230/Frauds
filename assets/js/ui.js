@@ -64,15 +64,16 @@ function renderHeader() {
     document.addEventListener('click', () => menu.classList.remove('open'));
   }
 
-  host.querySelectorAll('[data-signout]').forEach(a => a.addEventListener('click', ev => {
+  host.querySelectorAll('[data-signout]').forEach(a => a.addEventListener('click', async ev => {
     ev.preventDefault();
-    Store.signOut();
+    await Store.signOut();
     toast('Signed out.');
     renderHeader();
     if (['account.html', 'checkout.html', 'submit.html'].indexOf(currentPage()) > -1) location.href = 'index.html';
   }));
 
   renderTicker();
+  if (Store.offline) markOffline();
 }
 
 function accountMenuMarkup(s) {
@@ -232,16 +233,29 @@ function voteControls(fraud) {
     b.className = 'vote ' + kind + (current === kind ? ' cast' : '');
     b.type = 'button';
     b.textContent = label;
-    b.addEventListener('click', ev => {
+    b.addEventListener('click', async ev => {
       ev.stopPropagation();
       ev.preventDefault();
-      const now = Store.castVote(fraud.id, kind);
-      wrap.querySelectorAll('.vote').forEach(x => x.classList.remove('cast'));
-      if (now) {
-        b.classList.add('cast');
-        toast(fraud.name + ' marked ' + (kind === 'rise' ? 'a rising star' : 'overrated') + '.');
-      } else {
-        toast('Vote withdrawn.');
+      if (!Store.isSignedIn()) return promptSignIn();
+
+      b.disabled = true;
+      try {
+        const res = await Store.castVote(fraud.id, kind);
+        wrap.querySelectorAll('.vote').forEach(x => x.classList.remove('cast'));
+        if (res.vote) {
+          b.classList.add('cast');
+          toast(fraud.name + ' marked ' + (kind === 'rise' ? 'a rising star' : 'overrated') + '.');
+        } else {
+          toast('Vote withdrawn.');
+        }
+        if (res.sentiment) {
+          wrap.querySelector('.vote.rise').textContent = 'Rising ' + res.sentiment.rise + '%';
+          wrap.querySelector('.vote.over').textContent = 'Overrated ' + res.sentiment.over + '%';
+        }
+      } catch (err) {
+        apiFail(err);
+      } finally {
+        b.disabled = false;
       }
     });
     wrap.appendChild(b);
@@ -260,18 +274,21 @@ function watchButton(fraud, withLabel) {
     b.innerHTML = (on ? '&#9733;' : '&#9734;') + (withLabel ? ' <span>' + (on ? 'Watching' : 'Watch') + '</span>' : '');
   };
   paint();
-  b.addEventListener('click', ev => {
+  b.addEventListener('click', async ev => {
     ev.stopPropagation();
     ev.preventDefault();
-    const res = Store.toggleWatch(fraud.id);
-    if (res === 'full') {
-      modal('Watchlist limit reached',
-        '<p>Spectator members can watch up to five Frauds. Verified members get an unlimited watchlist along with a nomination every cycle.</p>',
-        '<a class="btn" href="account.html#watchlist">Manage watchlist</a><a class="btn btn-gold" href="membership.html">See membership</a>');
-      return;
+    if (!Store.isSignedIn()) return promptSignIn();
+
+    b.disabled = true;
+    try {
+      const watching = await Store.toggleWatch(fraud.id);
+      paint();
+      toast(watching ? fraud.name + ' added to your watchlist.' : fraud.name + ' removed from your watchlist.');
+    } catch (err) {
+      apiFail(err);
+    } finally {
+      b.disabled = false;
     }
-    paint();
-    toast(res ? fraud.name + ' added to your watchlist.' : fraud.name + ' removed from your watchlist.');
   });
   return b;
 }
@@ -352,9 +369,64 @@ function initForms() {
   });
 }
 
-/* ---------- boot ---------- */
-document.addEventListener('DOMContentLoaded', () => {
-  renderHeader();
-  renderFooter();
-  initForms();
-});
+/* ---------- boot ---------- *
+ * Pages register their work with App.ready(). It runs once the dataset and
+ * the session have been loaded, so page code can read Store synchronously.
+ */
+const App = (() => {
+  const queue = [];
+  let booted = false;
+
+  return {
+    ready(fn) {
+      if (booted) fn();
+      else queue.push(fn);
+    },
+    async boot() {
+      await Store.boot();
+      renderHeader();
+      renderFooter();
+      initForms();
+      booted = true;
+      queue.splice(0).forEach(fn => {
+        try { fn(); } catch (e) { console.error(e); }
+      });
+    }
+  };
+})();
+
+/* The static site works without the backend; say so rather than pretending. */
+function markOffline() {
+  const bar = document.createElement('div');
+  bar.className = 'offline-bar';
+  bar.innerHTML = 'Running without the backend &mdash; your account, watchlist and votes are saved in this browser only.';
+  const head = document.getElementById('site-header');
+  if (head) head.appendChild(bar);
+}
+
+/* Turn an API failure into something a person can act on. */
+function apiFail(err, fallbackMessage) {
+  if (!err) return;
+  if (err.code === 'unauthorized' || err.status === 401) return promptSignIn();
+  if (err.code === 'watchlist_full') {
+    return modal('Watchlist limit reached',
+      '<p>Spectator members can watch up to five Frauds. Verified members get an unlimited watchlist along with a nomination every cycle.</p>',
+      '<a class="btn" href="account.html#watchlist">Manage watchlist</a><a class="btn btn-gold" href="membership.html">See membership</a>');
+  }
+  if (err.code === 'upgrade_required') {
+    return modal('Verified members only',
+      '<p>' + err.message + ' Verified puts one figure per cycle in front of the panel.</p>',
+      '<a class="btn" href="membership.html">Compare plans</a><a class="btn btn-gold" href="checkout.html?plan=verified">Upgrade &mdash; $9/mo</a>');
+  }
+  if (err.code === 'network_error') return toast('The board is not responding. Try again in a moment.', 'bad');
+  toast(err.message || fallbackMessage || 'That did not work.', 'bad');
+}
+
+function promptSignIn() {
+  const here = encodeURIComponent(currentPage() + location.search);
+  modal('Sign in to do that',
+    '<p>Votes, watchlists and nominations are tied to a member account so the panel knows who is moving the board.</p>',
+    `<a class="btn" href="signup.html?next=${here}">Create an account</a><a class="btn btn-gold" href="login.html?next=${here}">Sign in</a>`);
+}
+
+document.addEventListener('DOMContentLoaded', () => { App.boot(); });

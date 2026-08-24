@@ -2,7 +2,7 @@
    OFFICIAL FRAUD RANKINGS — cycle reports index and article
    ============================================================ */
 
-document.addEventListener('DOMContentLoaded', () => {
+App.ready(() => {
   const list = document.getElementById('news-list');
   if (list) {
     const lead = NEWS[0];

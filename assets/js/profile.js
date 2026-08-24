@@ -2,7 +2,7 @@
    OFFICIAL FRAUD RANKINGS — profile page
    ============================================================ */
 
-document.addEventListener('DOMContentLoaded', () => {
+App.ready(() => {
   const host = document.getElementById('profile');
   if (!host) return;
 

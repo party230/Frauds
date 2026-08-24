@@ -1,0 +1,16 @@
+{
+  "name": "official-fraud-rankings",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Parody leaderboard site — static frontend plus a dependency-free Node backend (SQLite, sessions, membership gates).",
+  "scripts": {
+    "start": "node server/server.js",
+    "dev": "node --watch server/server.js",
+    "check": "node --check server/server.js && node --check server/api.js && node --check server/db.js && node --check server/auth.js && node --check server/dataset.js",
+    "reset-db": "node -e \"require('node:fs').rmSync(require('./server/db.js').DB_PATH.replace(/\\\\.sqlite$/, ''), { force: true, recursive: true })\" && node -e \"const p=require('./server/db.js').DB_PATH; for (const s of ['','-wal','-shm']) require('node:fs').rmSync(p+s,{force:true}); console.log('database cleared')\""
+  },
+  "engines": {
+    "node": ">=22.5"
+  },
+  "license": "MIT"
+}

@@ -2,7 +2,7 @@
    OFFICIAL FRAUD RANKINGS — nominate a Fraud
    ============================================================ */
 
-document.addEventListener('DOMContentLoaded', () => {
+App.ready(() => {
   const host = document.getElementById('submit-page');
   if (!host) return;
 
@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const fail = msg => { err.textContent = msg; err.classList.add('show'); };
 
-  form.addEventListener('submit', ev => {
+  form.addEventListener('submit', async ev => {
     ev.preventDefault();
     err.classList.remove('show');
 
@@ -51,13 +51,25 @@ document.addEventListener('DOMContentLoaded', () => {
     if (note.length < 40) return fail('The panel needs a case of at least forty characters, citing evidence from the last two cycles.');
     if (FRAUDS.some(f => f.name.toLowerCase() === name.toLowerCase())) return fail(name + ' is already ranked on the board.');
 
-    Store.addNomination({
-      name: name,
-      handle: handle[0] === '@' ? handle : '@' + handle,
-      region: form.region.value.trim(),
-      quality: form.quality.value,
-      note: note
-    });
+    const submit = form.querySelector('button[type=submit]');
+    submit.disabled = true;
+    submit.textContent = 'Filing…';
+
+    let result;
+    try {
+      result = await Store.addNomination({
+        name: name,
+        handle: handle[0] === '@' ? handle : '@' + handle,
+        region: form.region.value.trim(),
+        quality: form.quality.value,
+        note: note
+      });
+    } catch (e) {
+      submit.disabled = false;
+      submit.textContent = 'Submit nomination';
+      if (e.code === 'upgrade_required' || e.code === 'unauthorized') return apiFail(e);
+      return fail(e.message);
+    }
 
     form.reset();
     form.style.display = 'none';
@@ -65,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="tick">&#10003;</div>
       <div class="num-tag">Submission received</div>
       <h3>${name} is under review</h3>
-      <p>The panel requires two full cycles of evidence, so the earliest ${name} can appear on the board is cycle ${CURRENT_CYCLE + 2}. You will find the status in your dashboard.</p>
+      <p>The panel requires two full cycles of evidence, so the earliest ${name} can appear on the board is cycle ${result.earliestEntry || CURRENT_CYCLE + 2}. You will find the status in your dashboard.</p>
       <div class="profile-actions" style="margin-top:18px">
         <a class="btn btn-gold btn-sm" href="account.html">Track it in your dashboard</a>
         <a class="btn btn-sm" href="rankings.html">Back to the board</a>

@@ -2,7 +2,7 @@
    OFFICIAL FRAUD RANKINGS — full board
    ============================================================ */
 
-document.addEventListener('DOMContentLoaded', () => {
+App.ready(() => {
   const board = document.getElementById('board');
   if (!board) return;
 
@@ -34,6 +34,39 @@ document.addEventListener('DOMContentLoaded', () => {
   const chips = Array.from(document.querySelectorAll('.chip'));
   chips.forEach(c => c.classList.toggle('on', c.dataset.tier === tier));
 
+  /* Online, the board is filtered, sorted and paged by the server; offline the
+     same rules run against the bundled dataset. */
+  function queryParams() {
+    const qs = new URLSearchParams();
+    if (search.value.trim()) qs.set('q', search.value.trim());
+    if (tier !== 'all') qs.set('tier', tier);
+    if (region.value !== 'all') qs.set('region', region.value);
+    if (quality.value) qs.set('quality', quality.value);
+    else if (sort.value !== 'rank') qs.set('sort', sort.value);
+    if (watchOnly.checked) qs.set('watched', '1');
+    qs.set('limit', String(shown));
+    return qs;
+  }
+
+  async function fetchPage() {
+    if (Store.offline) {
+      const field = filtered();
+      return { frauds: field.slice(0, shown), total: field.length };
+    }
+    try {
+      return await Api.get('/frauds?' + queryParams().toString());
+    } catch (err) {
+      if (err.code === 'unauthorized' && watchOnly.checked) {
+        watchOnly.checked = false;
+        promptSignIn();
+      } else {
+        toast('The board is not responding. Showing the cached cycle.', 'bad');
+      }
+      const field = filtered();
+      return { frauds: field.slice(0, shown), total: field.length };
+    }
+  }
+
   function filtered() {
     const q = search.value.trim().toLowerCase();
     let field = rankedField();
@@ -64,13 +97,20 @@ document.addEventListener('DOMContentLoaded', () => {
     return field;
   }
 
-  function render(resetPage) {
+  let renderToken = 0;
+
+  async function render(resetPage) {
     if (resetPage) shown = PAGE;
-    const field = filtered();
-    const page = field.slice(0, shown);
+    const token = ++renderToken;
+
+    const res = await fetchPage();
+    if (token !== renderToken) return;            /* a newer keystroke won */
+
+    const page = res.frauds;
+    const total = res.total;
 
     board.innerHTML = '';
-    if (!field.length) {
+    if (!total) {
       board.innerHTML = `<div class="empty">
         <p>No ranked Fraud matches those filters.</p>
         <button class="btn btn-sm" type="button" id="clear-filters">Clear all filters</button>
@@ -89,11 +129,11 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    count.textContent = field.length
-      ? `Showing ${page.length} of ${field.length} ranked ${field.length === 1 ? 'Fraud' : 'Frauds'}`
+    count.textContent = total
+      ? `Showing ${page.length} of ${total} ranked ${total === 1 ? 'Fraud' : 'Frauds'}`
       : 'No results';
-    more.style.display = field.length > shown ? '' : 'none';
-    more.textContent = `Load ${Math.min(PAGE, field.length - shown)} more`;
+    more.style.display = total > page.length ? '' : 'none';
+    more.textContent = `Load ${Math.min(PAGE, total - page.length)} more`;
   }
 
   function clearAll() {
@@ -107,7 +147,11 @@ document.addEventListener('DOMContentLoaded', () => {
     render(true);
   }
 
-  search.addEventListener('input', () => render(true));
+  let typing;
+  search.addEventListener('input', () => {
+    clearTimeout(typing);
+    typing = setTimeout(() => render(true), 180);
+  });
   [sort, region, quality].forEach(el => el.addEventListener('change', () => render(true)));
   watchOnly.addEventListener('change', () => render(true));
   chips.forEach(c => c.addEventListener('click', () => {
