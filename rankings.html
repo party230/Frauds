@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%2307080b'/><text x='16' y='23' font-size='20' font-family='Arial' font-weight='bold' text-anchor='middle' fill='%23d9b25c'>F</text></svg>">
+<title>The Board | Official Fraud Rankings</title>
+<meta name="description" content="Every ranked Fraud in the verse — search, filter by tier or region, rank by any single quality.">
+</head>
+<body>
+<div id="site-header"></div>
+<main>
+<section class="page-head">
+  <div class="wrap">
+    <div class="eyebrow">Cycle 41 &middot; The complete board</div>
+    <h1>The <em>Fraud</em> Board</h1>
+    <p>Every ranked figure in the verse, graded on ten evenly weighted qualities. Filter it, sort it, rank it by any single quality, and star the ones you want to follow.</p>
+  </div>
+</section>
+
+<section class="section" style="padding-top:26px">
+  <div class="wrap">
+    <div class="controls">
+      <label class="field">
+        <span class="ic">&#9906;</span>
+        <input id="search" type="search" placeholder="Search name, handle, region or panel note" aria-label="Search the board">
+      </label>
+      <label class="field">
+        <select id="sort" aria-label="Sort the board">
+          <option value="rank">Sort: Rank</option>
+          <option value="movers">Sort: Biggest risers</option>
+          <option value="fallers">Sort: Biggest fallers</option>
+          <option value="newest">Sort: Newest entrants</option>
+          <option value="age">Sort: Youngest</option>
+          <option value="name">Sort: Name</option>
+        </select>
+      </label>
+      <label class="field"><select id="region" aria-label="Filter by region"></select></label>
+      <label class="field"><select id="quality" aria-label="Rank by a single quality"></select></label>
+      <label class="toggle">
+        <input type="checkbox" id="watch-only">
+        <span>Watchlist only</span>
+      </label>
+      <div class="chip-row">
+        <button class="chip on" data-tier="all" type="button">All</button>
+        <button class="chip" data-tier="mythic" type="button">Mythic</button>
+        <button class="chip" data-tier="elite" type="button">Elite</button>
+        <button class="chip" data-tier="ascending" type="button">Ascending</button>
+        <button class="chip" data-tier="contender" type="button">Contender</button>
+        <button class="chip" data-tier="prospect" type="button">Prospect</button>
+      </div>
+    </div>
+
+    <div class="result-bar">
+      <span id="result-count"></span>
+      <button class="btn btn-sm" type="button" id="clear-all">Clear filters</button>
+    </div>
+
+    <div class="board">
+      <div class="board-head">
+        <div>Rank</div><div>Move</div><div>Fraud</div><div>Grade</div><div>Tier</div><div>Community</div><div></div>
+      </div>
+      <div id="board"></div>
+    </div>
+
+    <div style="text-align:center;margin-top:22px">
+      <button class="btn" type="button" id="load-more">Load more</button>
+    </div>
+  </div>
+</section>
+</main>
+<div id="site-footer"></div>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/store.js"></script>
+<script src="assets/js/ui.js"></script>
+<script src="assets/js/rankings.js"></script>
+</body>
+</html>

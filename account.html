@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%2307080b'/><text x='16' y='23' font-size='20' font-family='Arial' font-weight='bold' text-anchor='middle' fill='%23d9b25c'>F</text></svg>">
+<title>Dashboard | Official Fraud Rankings</title>
+<meta name="description" content="Your watchlist, vote record, nominations and membership.">
+</head>
+<body>
+<div id="site-header"></div>
+<main>
+<section id="account" class="section" style="padding-top:34px">
+  <div class="wrap">
+    <div id="acct-summary"></div>
+    <div class="stat-strip" id="acct-stats" style="margin:28px 0 0"></div>
+  </div>
+
+  <div class="wrap section" id="watchlist-section" style="padding-bottom:0">
+    <div class="section-head" id="watchlist-anchor">
+      <h2>Watchlist</h2>
+      <span class="rule"></span>
+      <p id="watch-cap"></p>
+    </div>
+    <div class="board"><div id="watchlist"></div></div>
+  </div>
+
+  <div class="wrap section" style="padding-bottom:0">
+    <div class="grid-2">
+      <div class="card" id="votes">
+        <div class="num-tag">Cycle 41</div>
+        <h3>Your vote record</h3>
+        <div id="vote-record" style="margin-top:10px"></div>
+      </div>
+      <div class="card">
+        <div class="num-tag">Submissions</div>
+        <h3>Nominations</h3>
+        <div id="nominations" style="margin-top:10px"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap section" style="padding-bottom:0">
+    <div class="grid-2">
+      <div class="card">
+        <div class="num-tag">Panel desk</div>
+        <h3>Grade appeals</h3>
+        <div id="appeals" style="margin-top:10px"></div>
+      </div>
+      <div class="card">
+        <div class="num-tag">Settings</div>
+        <h3>Account details</h3>
+        <form class="form" id="settings-form" style="margin-top:14px" novalidate>
+          <div><label for="name_">Name</label><input id="name_" name="name_"></div>
+          <div><label for="email_">Email</label><input id="email_" name="email_" type="email"></div>
+          <button class="btn btn-gold" type="submit">Save changes</button>
+        </form>
+        <div class="profile-actions" style="margin-top:18px">
+          <button class="btn btn-sm" type="button" id="sign-out">Sign out</button>
+          <button class="btn btn-sm btn-danger" type="button" id="reset-data">Clear stored data</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+<div id="site-footer"></div>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/store.js"></script>
+<script src="assets/js/ui.js"></script>
+<script src="assets/js/account.js"></script>
+</body>
+</html>

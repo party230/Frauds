@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%2307080b'/><text x='16' y='23' font-size='20' font-family='Arial' font-weight='bold' text-anchor='middle' fill='%23d9b25c'>F</text></svg>">
+<title>Checkout | Official Fraud Rankings</title>
+<meta name="description" content="Complete your Official Fraud Rankings membership.">
+</head>
+<body>
+<div id="site-header"></div>
+<main>
+<section id="checkout" class="section" style="padding-top:40px">
+  <div class="wrap">
+    <a class="crumb" href="membership.html">&larr; Back to membership</a>
+    <div class="section-head" style="margin-top:14px">
+      <h2>Checkout</h2>
+      <span class="rule"></span>
+      <p>Demonstration checkout &middot; no payment is taken</p>
+    </div>
+
+    <div class="checkout-grid">
+      <div>
+        <div class="card notice-card" id="gate"></div>
+        <form class="card form" id="pay-form">
+          <div class="num-tag">Payment details</div>
+          <h3 style="margin-bottom:16px">Card</h3>
+          <div class="notice notice-bad" id="pay-error"></div>
+
+          <div><label for="billing-cycle">Billing</label>
+            <select id="billing-cycle" name="billing">
+              <option value="month">Monthly</option>
+              <option value="year">Yearly &mdash; two months free</option>
+            </select>
+          </div>
+          <div><label for="cardname">Name on card</label><input id="cardname" name="cardname" autocomplete="cc-name" placeholder="As printed on the card"></div>
+          <div><label for="card">Card number</label><input id="card" name="card" inputmode="numeric" autocomplete="cc-number" placeholder="4242 4242 4242 4242"></div>
+          <div class="form-row">
+            <div><label for="exp">Expiry</label><input id="exp" name="exp" inputmode="numeric" autocomplete="cc-exp" placeholder="MM/YY"></div>
+            <div><label for="cvc">Security code</label><input id="cvc" name="cvc" inputmode="numeric" autocomplete="cc-csc" placeholder="123"></div>
+            <div><label for="zip">Postcode</label><input id="zip" name="zip" autocomplete="postal-code" placeholder="SW1A 1AA"></div>
+          </div>
+          <button class="btn btn-gold btn-block" type="submit">Complete order</button>
+          <p class="form-note">By completing this order you accept the <a href="terms.html">terms</a>. Cancel any time from your dashboard.</p>
+        </form>
+      </div>
+      <aside class="card" id="summary"></aside>
+    </div>
+  </div>
+</section>
+</main>
+<div id="site-footer"></div>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/store.js"></script>
+<script src="assets/js/ui.js"></script>
+<script src="assets/js/checkout.js"></script>
+</body>
+</html>

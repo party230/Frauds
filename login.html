@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%2307080b'/><text x='16' y='23' font-size='20' font-family='Arial' font-weight='bold' text-anchor='middle' fill='%23d9b25c'>F</text></svg>">
+<title>Sign In | Official Fraud Rankings</title>
+<meta name="description" content="Sign in to your Official Fraud Rankings account.">
+</head>
+<body>
+<div id="site-header"></div>
+<main>
+<section class="section auth-section">
+  <div class="wrap auth-wrap">
+    <div class="card auth-card">
+      <div class="num-tag">Members</div>
+      <h1>Sign In</h1>
+      <p class="auth-sub">Your watchlist, votes and nominations live with your account.</p>
+
+      <div class="card notice-card" id="already"></div>
+      <div class="notice notice-bad" id="auth-error"></div>
+
+      <form class="form" id="auth-form" data-mode="login" novalidate>
+        <div><label for="email">Email</label><input id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com"></div>
+        <div><label for="password">Password</label><input id="password" name="password" type="password" autocomplete="current-password" placeholder="At least eight characters"></div>
+        <button class="btn btn-gold btn-block" type="submit">Sign in</button>
+      </form>
+
+      <p class="auth-alt">No account yet? <a href="signup.html" data-carry>Create one</a>.</p>
+      <p class="form-note">This is a demonstration site. Accounts are stored in this browser only — never send a real password.</p>
+    </div>
+
+    <div class="auth-aside">
+      <div class="card">
+        <div class="num-tag">What an account gets you</div>
+        <ul class="check-list">
+          <li>A watchlist that follows the Frauds you care about</li>
+          <li>Your rising star and overrated votes on the record</li>
+          <li>Nominations, appeals and panel notes in one dashboard</li>
+        </ul>
+        <a class="btn btn-sm btn-block" href="membership.html">See membership tiers</a>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+<div id="site-footer"></div>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/store.js"></script>
+<script src="assets/js/ui.js"></script>
+<script src="assets/js/auth.js"></script>
+</body>
+</html>

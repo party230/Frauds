@@ -186,3 +186,99 @@ const FRAUDS = [
     stats: { height: 89, frame: 85, transformation: 86, aesthetics: 85, grooming: 88, drip: 86, business: 82, social: 68, personality: 84, longevity: 80 }
   }
 ];
+
+/* ---------- membership plans ---------- */
+const PLANS = [
+  {
+    id: 'spectator', name: 'Spectator', price: 0, level: 0,
+    blurb: 'The public board, free forever.',
+    perks: [
+      'Full public board every cycle',
+      'Rising star and overrated voting',
+      'Quality breakdown on every profile',
+      'Watchlist of up to five Frauds'
+    ]
+  },
+  {
+    id: 'verified', name: 'Verified', price: 9, level: 1, featured: true,
+    blurb: 'For the members who move the board.',
+    perks: [
+      'Everything in Spectator',
+      'Nominate a Fraud for review each cycle',
+      'Grade history and cycle-by-cycle movement',
+      'Panel notes released 24 hours early',
+      'Unlimited watchlist'
+    ]
+  },
+  {
+    id: 'panel', name: 'Panel Access', price: 29, level: 2,
+    blurb: 'The numbers behind every grade.',
+    perks: [
+      'Everything in Verified',
+      'Raw per-quality scoring sheets',
+      'Priority submissions and grade appeals',
+      'Head-to-head comparison exports',
+      'Direct line to the ranking panel'
+    ]
+  }
+];
+
+/* ---------- cycle reports ---------- */
+const NEWS = [
+  {
+    id: 'c41', cycle: 41, date: '24 August 2026', tag: 'Cycle report',
+    title: 'Locke breaks the top ten as Reyes posts the steepest fall on record',
+    lede: 'Cycle 41 delivered the widest spread of movement the board has seen since the format was fixed: four positions up for Zephyr Locke, four down for Konstantin Reyes, and a top three that refused to move at all.',
+    body: [
+      'The headline of the cycle is Zephyr Locke, who converts the highest transformation grade ever recorded by the panel into a top-ten placement twenty-nine cycles after entering at #61. Nothing about the underlying profile is remarkable — the frame grades below several figures ranked beneath him — but the panel has now upgraded his transformation lane in seven consecutive cycles, and at 10% of the aggregate that compounds.',
+      'At the other end, Konstantin Reyes gives back four positions after the largest conduct adjustment the panel has issued. His physical grades are untouched; personality and social resonance both fell, and two lanes moving together is worth more than any single lane can absorb.',
+      'The top three held. Baron Vexley extends his run at the summit to eleven cycles, Sylas Kane keeps second on the strength of the most complete profile on the board, and Dominic Ash concedes nothing structurally while continuing to leak ground on media.',
+      'Elsewhere: Theo Marchetti and Ronan Blackwood both posted their fourth straight positive cycle, Emeric Sloan drew a second consecutive overrated flag from the community, and Hugo Vantablack set a ranking record by holding the same position for a fourth cycle running.'
+    ]
+  },
+  {
+    id: 'c40', cycle: 40, date: '22 August 2026', tag: 'Cycle report',
+    title: 'The board tightens: eight Frauds separated by under two points',
+    lede: 'Compression through the middle of the board has made the Ascending tier the most contested it has ever been, with eight ranked figures inside a two-point band.',
+    body: [
+      'From #9 through #16 the aggregate spread is 1.9 points. In practical terms every one of those eight Frauds is a single quality upgrade away from moving three or four positions, and the panel expects the next two cycles to look violent as a result.',
+      'Compression is a function of the even weighting. When no quality can be leaned on for more than 10%, profiles converge toward the middle unless a figure grades exceptionally in several lanes at once — which is precisely what separates the top five from everyone else.'
+    ]
+  },
+  {
+    id: 'c39', cycle: 39, date: '20 August 2026', tag: 'Methodology',
+    title: 'Why longevity is worth exactly as much as height',
+    lede: 'The single most common appeal the panel receives argues that the ten qualities should not be weighted evenly. Here is why they are, and why that is not changing.',
+    body: [
+      'Every cycle the desk receives appeals from members arguing that business acumen should outweigh height, or that transformation should count double for figures early in an arc. The even split is the entire basis of the ranking. Once one quality is worth more than another, the board stops measuring the Fraud and starts measuring the panel.',
+      'The even weighting also has a practical effect: it makes a single elite lane insufficient. Silas Vandergraaf holds a 95 frame grade and sits outside the top fifteen, because five of his other lanes grade below 82. A ranking that weighted frame heavily would have him in the top five and would tell you very little.'
+    ]
+  },
+  {
+    id: 'c38', cycle: 38, date: '18 August 2026', tag: 'Board note',
+    title: 'Submissions reopen: what the panel needs from a nomination',
+    lede: 'Nominations are open to Verified members again after a two-cycle pause. The panel has published what a submission needs to contain to be reviewed.',
+    body: [
+      'A nomination is reviewed only when it names a standout quality and cites evidence from within the last two cycles. Submissions that consist of a name and a handle are logged but not graded.',
+      'Nothing enters the board on a single showing. The panel requires two full cycles of evidence before a nominated figure is graded across all ten qualities, which means the fastest a nomination can appear on the board is cycle 43.'
+    ]
+  },
+  {
+    id: 'c37', cycle: 37, date: '16 August 2026', tag: 'Cycle report',
+    title: 'Vexley extends to nine as the Mythic tier stays a population of one',
+    lede: 'For the ninth consecutive cycle the Mythic tier contains exactly one name, and the gap between first and second has widened again.',
+    body: [
+      'Baron Vexley moves to 95.8 and remains the only figure above the 95.0 Mythic threshold. Sylas Kane sits 2.1 points back with the most balanced profile on the board and no obvious route to closing the gap other than a commercial venture.',
+      'The panel notes that the Mythic threshold has never been adjusted and will not be. A tier that admits three or four figures per cycle stops describing anything.'
+    ]
+  },
+  {
+    id: 'c36', cycle: 36, date: '14 August 2026', tag: 'Community',
+    title: 'Community sentiment now moves grades in two lanes, not one',
+    lede: 'Sustained rising-star and overrated voting will now trigger a panel review of personality and social resonance together rather than in isolation.',
+    body: [
+      'Sentiment has always fed into the board, but until this cycle a sustained overrated flag triggered a review of a single lane. From cycle 36 the review covers personality and social resonance jointly, on the basis that community perception rarely moves one without the other.',
+      'This does not mean votes set grades. The panel grades; sustained sentiment decides what gets re-examined.'
+    ]
+  }
+];

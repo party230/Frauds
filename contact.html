@@ -9,82 +9,56 @@
 <link rel="stylesheet" href="assets/css/styles.css">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%2307080b'/><text x='16' y='23' font-size='20' font-family='Arial' font-weight='bold' text-anchor='middle' fill='%23d9b25c'>F</text></svg>">
 <title>Contact | Official Fraud Rankings</title>
-<meta name="description" content="Submit a Fraud for review, appeal a grade, or contact the Official Fraud Rankings panel.">
+<meta name="description" content="Appeal a grade or contact the Official Fraud Rankings panel desk.">
 </head>
 <body>
-<div class="ticker-bar"><div class="ticker-track"></div></div>
-
-<header class="site-head">
-  <div class="wrap head-inner">
-    <a class="brand" href="index.html">
-      <span class="brand-mark">F</span>
-      <span class="brand-txt">
-        <span class="b1">Official <em>Fraud</em> Rankings</span>
-        <span class="b2">The Fraud Verse Leaderboard</span>
-      </span>
-    </a>
-    <nav class="nav">
-      <a href="index.html">Rankings</a>
-      <a href="about.html">Methodology</a>
-      <a href="index.html#membership">Membership</a>
-      <a href="contact.html">Contact</a>
-    </nav>
-    <a class="btn btn-gold btn-sm head-cta" href="contact.html#submit">Submit a Fraud</a>
-    <button class="burger" type="button" aria-label="Menu">&#9776;</button>
-  </div>
-</header>
+<div id="site-header"></div>
 <main>
-<section class="hero" style="padding-bottom:44px">
+<section class="page-head">
   <div class="wrap">
     <div class="eyebrow">Contact</div>
     <h1>Reach the <em>Fraud</em> Panel</h1>
-    <p>Nominations, grade appeals, press and partnership enquiries all come through this page. The panel reads everything between cycles.</p>
+    <p>Grade appeals, press and partnership enquiries all come through this page. The panel reads everything between cycles.</p>
   </div>
 </section>
 
-<section class="section">
-  <div class="wrap grid-2">
-    <div class="card" id="submit">
+<section class="section" style="padding-top:26px">
+  <div class="wrap grid-2" style="align-items:start">
+    <div class="card" id="appeal">
       <div class="num-tag">Form 01</div>
-      <h3>Submit a Fraud</h3>
-      <p style="margin-bottom:18px">Nominate a figure for review. The panel requires two full cycles of evidence before anything enters the board.</p>
-      <div class="notice" id="submit-notice">Submission received. The panel will review this nomination in the next cycle.</div>
-      <form class="form" data-notice="submit-notice">
-        <div><label for="s-name">Name of the Fraud</label><input id="s-name" required placeholder="Full name"></div>
-        <div><label for="s-handle">Primary handle</label><input id="s-handle" required placeholder="@handle"></div>
-        <div><label for="s-region">Region</label><input id="s-region" placeholder="City, country"></div>
-        <div><label for="s-quality">Standout quality</label>
-          <select id="s-quality">
-            <option>Height</option><option>Body Frame</option><option>Transformation</option>
-            <option>Facial Aesthetics</option><option>Grooming</option><option>Style &amp; Drip</option>
-            <option>Business Acumen</option><option>Social Resonance</option><option>Personality</option>
-            <option>Longevity</option>
-          </select>
-        </div>
-        <div><label for="s-case">The case</label><textarea id="s-case" required placeholder="Why does this figure belong on the board?"></textarea></div>
-        <button class="btn btn-gold" type="submit">Submit nomination</button>
-        <p class="form-note">Nominations are open to Verified members. One per member per cycle.</p>
+      <h3>Appeal a grade</h3>
+      <p style="margin-bottom:18px">Dispute a specific quality on a specific Fraud. Appeals that name no quality are not reviewed.</p>
+      <div class="notice notice-info" id="appeal-gate"></div>
+      <div class="notice notice-bad" id="appeal-error"></div>
+      <div class="notice" id="appeal-notice"></div>
+      <form class="form" id="appeal-form" novalidate>
+        <div><label for="fraud">Ranked Fraud</label><select id="fraud" name="fraud"></select></div>
+        <div><label for="quality">Quality in dispute</label><select id="quality" name="quality"></select></div>
+        <div><label for="reason">The evidence</label><textarea id="reason" name="reason" placeholder="What did the panel miss in the cycle in question?"></textarea></div>
+        <button class="btn btn-gold" type="submit">File appeal</button>
+        <p class="form-note">One appeal per member per cycle on Panel Access.</p>
       </form>
     </div>
 
     <div style="display:grid;gap:16px;align-content:start">
-      <div class="card" id="appeal">
+      <div class="card">
         <div class="num-tag">Form 02</div>
-        <h3>General enquiry &amp; appeals</h3>
-        <p style="margin-bottom:18px">Dispute a grade, request panel access, or contact the board about press and partnerships.</p>
+        <h3>General enquiry</h3>
+        <p style="margin-bottom:18px">Press, partnerships, corrections, or anything else for the desk.</p>
         <div class="notice" id="contact-notice">Message sent. Expect a reply before the next refresh.</div>
         <form class="form" data-notice="contact-notice">
-          <div><label for="c-name">Your name</label><input id="c-name" required></div>
-          <div><label for="c-email">Email</label><input id="c-email" type="email" required></div>
+          <div class="form-row">
+            <div><label for="c-name">Your name</label><input id="c-name" required></div>
+            <div><label for="c-email">Email</label><input id="c-email" type="email" required></div>
+          </div>
           <div><label for="c-topic">Topic</label>
             <select id="c-topic">
-              <option>Grade appeal</option><option>Membership</option><option>Press</option>
-              <option>Partnership</option><option>Correction</option><option>Other</option>
+              <option>Press</option><option>Partnership</option><option>Membership</option>
+              <option>Correction</option><option>Other</option>
             </select>
           </div>
           <div><label for="c-msg">Message</label><textarea id="c-msg" required></textarea></div>
           <button class="btn btn-gold" type="submit">Send message</button>
-          <p class="form-note">Appeals must name the specific quality in dispute.</p>
         </form>
       </div>
 
@@ -97,46 +71,17 @@
           <div><span>Appeals</span><span>appeals@officialfraudrankings.com</span></div>
           <div><span>Response time</span><span>Within one cycle (48h)</span></div>
         </div>
+        <a class="btn btn-sm btn-block" style="margin-top:16px" href="submit.html">Nominate a Fraud instead</a>
       </div>
     </div>
   </div>
 </section>
 </main>
-<footer class="site-foot">
-  <div class="wrap">
-    <div class="foot-grid">
-      <div>
-        <h4>Official Fraud Rankings</h4>
-        <p>The definitive daily leaderboard tracking the rise and fall of the most influential Frauds across the verse in culture, business and media.</p>
-        <p>Board refreshed every 48 hours. Cycle 41.</p>
-      </div>
-      <div>
-        <h4>The Board</h4>
-        <a href="index.html">Full rankings</a>
-        <a href="index.html#podium">Top three</a>
-        <a href="index.html#membership">Membership</a>
-      </div>
-      <div>
-        <h4>How it works</h4>
-        <a href="about.html#qualities">The ten qualities</a>
-        <a href="about.html#tiers">Tier structure</a>
-        <a href="about.html#faq">FAQ</a>
-      </div>
-      <div>
-        <h4>Contact</h4>
-        <a href="contact.html">General enquiries</a>
-        <a href="contact.html#submit">Submit a Fraud</a>
-        <a href="contact.html#appeal">Appeal a grade</a>
-      </div>
-    </div>
-    <div class="foot-bottom">
-      <span>&copy; <span id="year">2026</span> Official Fraud Rankings. All rights reserved.</span>
-      <span>Satirical parody &middot; All ranked figures are fictional</span>
-    </div>
-  </div>
-</footer>
-
+<div id="site-footer"></div>
 <script src="assets/js/data.js"></script>
-<script src="assets/js/app.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/store.js"></script>
+<script src="assets/js/ui.js"></script>
+<script src="assets/js/contact.js"></script>
 </body>
 </html>

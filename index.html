@@ -12,27 +12,7 @@
 <meta name="description" content="The definitive daily leaderboard tracking the rise and fall of the most influential Frauds across the verse in culture, business and media.">
 </head>
 <body>
-<div class="ticker-bar"><div class="ticker-track"></div></div>
-
-<header class="site-head">
-  <div class="wrap head-inner">
-    <a class="brand" href="index.html">
-      <span class="brand-mark">F</span>
-      <span class="brand-txt">
-        <span class="b1">Official <em>Fraud</em> Rankings</span>
-        <span class="b2">The Fraud Verse Leaderboard</span>
-      </span>
-    </a>
-    <nav class="nav">
-      <a href="index.html">Rankings</a>
-      <a href="about.html">Methodology</a>
-      <a href="index.html#membership">Membership</a>
-      <a href="contact.html">Contact</a>
-    </nav>
-    <a class="btn btn-gold btn-sm head-cta" href="contact.html#submit">Submit a Fraud</a>
-    <button class="burger" type="button" aria-label="Menu">&#9776;</button>
-  </div>
-</header>
+<div id="site-header"></div>
 <main>
 <section class="hero">
   <div class="wrap">
@@ -40,7 +20,7 @@
     <h1>Official <em>Fraud</em> Rankings</h1>
     <p>The definitive daily leaderboard tracking the rise and fall of the most influential Frauds across the verse &mdash; in culture, business and media. Ten qualities. Even weighting. No favours.</p>
     <div class="hero-actions">
-      <a class="btn btn-gold" href="#board-section">View the board</a>
+      <a class="btn btn-gold" href="rankings.html">View the full board</a>
       <a class="btn" href="about.html">How grading works</a>
     </div>
     <div class="stat-strip" id="stat-strip"></div>
@@ -58,44 +38,44 @@
   </div>
 </section>
 
+<section class="section" style="padding-top:0">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Movers</h2>
+      <span class="rule"></span>
+      <p><a class="read-on" href="rankings.html?sort=movers">See every move this cycle &rarr;</a></p>
+    </div>
+    <div class="grid-2" id="movers"></div>
+  </div>
+</section>
+
 <section class="section" id="board-section" style="padding-top:0">
   <div class="wrap">
     <div class="section-head">
-      <h2>The Full Board</h2>
+      <h2>Top Ten</h2>
       <span class="rule"></span>
       <p>Click any Fraud for the full quality breakdown</p>
     </div>
-
-    <div class="controls">
-      <label class="field">
-        <span class="ic">&#9906;</span>
-        <input id="search" type="search" placeholder="Search name, handle or region" aria-label="Search the board">
-      </label>
-      <label class="field">
-        <select id="sort" aria-label="Sort the board">
-          <option value="rank">Sort: Rank</option>
-          <option value="movers">Sort: Biggest risers</option>
-          <option value="fallers">Sort: Biggest fallers</option>
-          <option value="newest">Sort: Newest entrants</option>
-          <option value="name">Sort: Name</option>
-        </select>
-      </label>
-      <div class="chip-row">
-        <button class="chip on" data-tier="all" type="button">All</button>
-        <button class="chip" data-tier="mythic" type="button">Mythic</button>
-        <button class="chip" data-tier="elite" type="button">Elite</button>
-        <button class="chip" data-tier="ascending" type="button">Ascending</button>
-        <button class="chip" data-tier="contender" type="button">Contender</button>
-        <button class="chip" data-tier="prospect" type="button">Prospect</button>
-      </div>
-    </div>
-
     <div class="board">
       <div class="board-head">
-        <div>Rank</div><div>Move</div><div>Fraud</div><div>Grade</div><div>Tier</div><div>Community</div>
+        <div>Rank</div><div>Move</div><div>Fraud</div><div>Grade</div><div>Tier</div><div>Community</div><div></div>
       </div>
       <div id="board"></div>
     </div>
+    <div style="text-align:center;margin-top:22px">
+      <a class="btn btn-gold" href="rankings.html">Open the full board &mdash; all 24 ranked</a>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Cycle Reports</h2>
+      <span class="rule"></span>
+      <p><a class="read-on" href="news.html">Every report &rarr;</a></p>
+    </div>
+    <div class="grid-3" id="news-teaser"></div>
   </div>
 </section>
 
@@ -106,81 +86,15 @@
       <span class="rule"></span>
       <p>Back the board, nominate figures, see the numbers behind every grade</p>
     </div>
-    <div class="grid-3">
-      <div class="card plan">
-        <div class="num-tag">Tier 01</div>
-        <h3>Spectator</h3>
-        <div class="price">Free<small> / forever</small></div>
-        <ul>
-          <li>Full public board every cycle</li>
-          <li>Rising star and overrated voting</li>
-          <li>Quality breakdown on every profile</li>
-        </ul>
-        <a class="btn btn-block" href="index.html#board-section">You are here</a>
-      </div>
-      <div class="card plan feature">
-        <div class="num-tag">Tier 02 &middot; Most popular</div>
-        <h3>Verified</h3>
-        <div class="price">$9<small> / month</small></div>
-        <ul>
-          <li>Everything in Spectator</li>
-          <li>Nominate a Fraud for review each cycle</li>
-          <li>Grade history and cycle-by-cycle movement</li>
-          <li>Panel notes released 24 hours early</li>
-        </ul>
-        <a class="btn btn-gold btn-block" href="contact.html#submit">Join Verified</a>
-      </div>
-      <div class="card plan">
-        <div class="num-tag">Tier 03</div>
-        <h3>Panel Access</h3>
-        <div class="price">$29<small> / month</small></div>
-        <ul>
-          <li>Everything in Verified</li>
-          <li>Raw per-quality scoring sheets</li>
-          <li>Priority submissions and grade appeals</li>
-          <li>Direct line to the ranking panel</li>
-        </ul>
-        <a class="btn btn-block" href="contact.html">Request access</a>
-      </div>
-    </div>
+    <div class="grid-3" id="plan-teaser"></div>
   </div>
 </section>
 </main>
-<footer class="site-foot">
-  <div class="wrap">
-    <div class="foot-grid">
-      <div>
-        <h4>Official Fraud Rankings</h4>
-        <p>The definitive daily leaderboard tracking the rise and fall of the most influential Frauds across the verse in culture, business and media.</p>
-        <p>Board refreshed every 48 hours. Cycle 41.</p>
-      </div>
-      <div>
-        <h4>The Board</h4>
-        <a href="index.html">Full rankings</a>
-        <a href="index.html#podium">Top three</a>
-        <a href="index.html#membership">Membership</a>
-      </div>
-      <div>
-        <h4>How it works</h4>
-        <a href="about.html#qualities">The ten qualities</a>
-        <a href="about.html#tiers">Tier structure</a>
-        <a href="about.html#faq">FAQ</a>
-      </div>
-      <div>
-        <h4>Contact</h4>
-        <a href="contact.html">General enquiries</a>
-        <a href="contact.html#submit">Submit a Fraud</a>
-        <a href="contact.html#appeal">Appeal a grade</a>
-      </div>
-    </div>
-    <div class="foot-bottom">
-      <span>&copy; <span id="year">2026</span> Official Fraud Rankings. All rights reserved.</span>
-      <span>Satirical parody &middot; All ranked figures are fictional</span>
-    </div>
-  </div>
-</footer>
-
+<div id="site-footer"></div>
 <script src="assets/js/data.js"></script>
-<script src="assets/js/app.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/store.js"></script>
+<script src="assets/js/ui.js"></script>
+<script src="assets/js/home.js"></script>
 </body>
 </html>

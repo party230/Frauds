@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%2307080b'/><text x='16' y='23' font-size='20' font-family='Arial' font-weight='bold' text-anchor='middle' fill='%23d9b25c'>F</text></svg>">
+<title>Submit a Fraud | Official Fraud Rankings</title>
+<meta name="description" content="Nominate a figure for review by the Official Fraud Rankings panel.">
+</head>
+<body>
+<div id="site-header"></div>
+<main>
+<section class="page-head">
+  <div class="wrap">
+    <div class="eyebrow">Nominations &middot; Cycle 41</div>
+    <h1>Submit a <em>Fraud</em></h1>
+    <p>Put a figure in front of the panel. One nomination per Verified member per cycle, and nothing enters the board on a single showing.</p>
+  </div>
+</section>
+
+<section class="section" id="submit-page" style="padding-top:26px">
+  <div class="wrap grid-2" style="align-items:start">
+    <div style="display:grid;gap:16px">
+      <div class="card notice-card" id="gate"></div>
+      <div class="card notice-card" id="nom-done"></div>
+
+      <form class="card form" id="nominate" novalidate>
+        <div class="num-tag">The nomination</div>
+        <h3 style="margin-bottom:16px">Who belongs on the board?</h3>
+        <div class="notice notice-bad" id="nom-error"></div>
+        <div><label for="name_">Name of the Fraud</label><input id="name_" name="name_" placeholder="Full name"></div>
+        <div class="form-row">
+          <div><label for="handle">Primary handle</label><input id="handle" name="handle" placeholder="@handle"></div>
+          <div><label for="region">Region</label><input id="region" name="region" placeholder="City, country"></div>
+        </div>
+        <div><label for="quality">Standout quality</label><select id="quality" name="quality"></select></div>
+        <div><label for="note">The case</label><textarea id="note" name="note" placeholder="Cite evidence from the last two cycles: appearances, ventures, transformation updates, conduct across the verse."></textarea></div>
+        <button class="btn btn-gold" type="submit">Submit nomination</button>
+        <p class="form-note">Submissions that name no standout quality and cite no evidence are logged but not graded.</p>
+      </form>
+    </div>
+
+    <div style="display:grid;gap:16px">
+      <div class="card">
+        <div class="num-tag">What happens next</div>
+        <h3>The review path</h3>
+        <div class="kv" style="margin-top:8px">
+          <div><span>Step 01</span><span>Panel logs the nomination</span></div>
+          <div><span>Step 02</span><span>Two cycles of evidence gathered</span></div>
+          <div><span>Step 03</span><span>Graded across all ten qualities</span></div>
+          <div><span>Earliest entry</span><span>Cycle 43</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="num-tag">Your submissions</div>
+        <h3>Filed nominations</h3>
+        <div id="past-noms" style="margin-top:10px"></div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+<div id="site-footer"></div>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/store.js"></script>
+<script src="assets/js/ui.js"></script>
+<script src="assets/js/submit.js"></script>
+</body>
+</html>

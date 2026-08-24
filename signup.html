@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%2307080b'/><text x='16' y='23' font-size='20' font-family='Arial' font-weight='bold' text-anchor='middle' fill='%23d9b25c'>F</text></svg>">
+<title>Create Account | Official Fraud Rankings</title>
+<meta name="description" content="Create a free Spectator account on the Official Fraud Rankings board.">
+</head>
+<body>
+<div id="site-header"></div>
+<main>
+<section class="section auth-section">
+  <div class="wrap auth-wrap">
+    <div class="card auth-card">
+      <div class="num-tag">Join the board</div>
+      <h1>Create Account</h1>
+      <p class="auth-sub">Free forever on Spectator. Upgrade whenever you want to nominate.</p>
+
+      <div class="card notice-card" id="already"></div>
+      <div class="notice notice-bad" id="auth-error"></div>
+
+      <form class="form" id="auth-form" data-mode="signup" novalidate>
+        <div><label for="fullname">Name</label><input id="fullname" name="fullname" autocomplete="name" placeholder="The name the panel sees"></div>
+        <div><label for="email">Email</label><input id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com"></div>
+        <div class="form-row">
+          <div><label for="password">Password</label><input id="password" name="password" type="password" autocomplete="new-password" placeholder="Eight characters or more"></div>
+          <div><label for="confirm">Confirm</label><input id="confirm" name="confirm" type="password" autocomplete="new-password" placeholder="Repeat it"></div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="terms" name="terms"><span>I accept the <a href="terms.html">terms</a> and <a href="privacy.html">privacy notice</a></span></label>
+        <button class="btn btn-gold btn-block" type="submit">Create account</button>
+      </form>
+
+      <p class="auth-alt">Already ranked? <a href="login.html" data-carry>Sign in</a>.</p>
+      <p class="form-note">This is a demonstration site. Accounts are stored in this browser only — never send a real password.</p>
+    </div>
+
+    <div class="auth-aside">
+      <div class="card">
+        <div class="num-tag">Spectator &middot; free</div>
+        <ul class="check-list">
+          <li>The full public board every cycle</li>
+          <li>Rising star and overrated voting</li>
+          <li>A watchlist of up to five Frauds</li>
+          <li>Head-to-head comparison</li>
+        </ul>
+        <a class="btn btn-sm btn-block" href="membership.html">Compare all tiers</a>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+<div id="site-footer"></div>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/store.js"></script>
+<script src="assets/js/ui.js"></script>
+<script src="assets/js/auth.js"></script>
+</body>
+</html>
