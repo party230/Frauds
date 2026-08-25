@@ -54,7 +54,7 @@ App.ready(() => {
       <div class="num-tag">Panel verdict</div>
       <h3>${lead ? lead.name + ' takes it' : 'Dead level'}</h3>
       <p>${lead
-        ? `${lead.name} leads by <strong>${gap.toFixed(1)}</strong> points on the aggregate and takes <strong>${lead.id === a.id ? winsA : winsB}</strong> of the ten qualities${draws ? `, with ${draws} drawn` : ''}. ${loserNote(a, b, lead)}`
+        ? `${lead.name} leads by <strong>${fmt(gap)}</strong> points on the aggregate and takes <strong>${lead.id === a.id ? winsA : winsB}</strong> of the ten qualities${draws ? `, with ${draws} drawn` : ''}.${gap < 0.2 ? ' The margin is inside a fifth of a point — the closest pairing on the board.' : ''} ${loserNote(a, b, lead, lead.id === a.id ? winsB : winsA)}`
         : 'Both profiles grade identically on the aggregate. The board splits them on cycles ranked.'}</p>
       <div class="h2h-tally">
         <span><b>${winsA}</b> ${a.name.split(' ')[0]}</span>
@@ -63,11 +63,15 @@ App.ready(() => {
       </div>`;
   }
 
-  function loserNote(a, b, lead) {
+  function loserNote(a, b, lead, winsOther) {
     const other = lead.id === a.id ? b : a;
     const weak = extremeQuality(other, false);
     const strong = extremeQuality(other, true);
-    return `${other.name} holds the edge nowhere decisive: ${strong.label.toLowerCase()} at ${strong.value} is the profile's best case, and ${weak.label.toLowerCase()} at ${weak.value} is what keeps them behind.`;
+
+    if (!winsOther) {
+      return `${other.name} holds the edge nowhere: ${strong.label.toLowerCase()} at ${strong.value} is the profile's best case, and ${weak.label.toLowerCase()} at ${weak.value} is what keeps them behind.`;
+    }
+    return `${other.name} takes ${winsOther} of the rest — ${strong.label.toLowerCase()} at ${strong.value} is the standout — but ${weak.label.toLowerCase()} at ${weak.value} is the lane still costing them the aggregate.`;
   }
 
   function sideMarkup(f) {

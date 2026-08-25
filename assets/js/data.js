@@ -20,19 +20,19 @@ var FRAUDS = [
   {
     id: 'f001', name: 'Parth Mehta', nickname: 'Party', handle: '@party', region: 'Mumbai, IN', age: 27,
     joined: 'Jan 2024', movement: 0, peak: 1, weeks: 41,
-    tagline: 'Undisputed. Has not surrendered the top slot in eleven consecutive cycles.',
-    bio: 'The measuring stick of the Fraud Verse. Party entered the rankings at #14 and climbed to the summit in under four months, largely on the back of a transformation arc the panel graded as generational. Runs a supplement label, two gyms and a media arm, and has never once posted a negative cycle at the top.',
+    tagline: 'Still #1 — by a hundredth of a point, for the first time in eleven cycles.',
+    bio: 'The measuring stick of the Fraud Verse. Party entered the rankings at #14 and climbed to the summit in under four months, largely on the back of a transformation arc the panel graded as generational. Runs a supplement label, two gyms and a media arm, and has never once posted a negative cycle at the top. Cycle 41 is the first in which the summit has been genuinely contested.',
     stats: { height: 97, frame: 98, transformation: 96, aesthetics: 95, grooming: 94, drip: 92, business: 96, social: 98, personality: 95, longevity: 97 }
   },
   {
-    id: 'f002', name: 'Adhiraj Sharma', nickname: 'Raj', handle: '@adhirajsharma', region: 'Delhi, IN', age: 24,
+    id: 'f002', name: 'Adhiraj Sharma', nickname: 'Adhilice', handle: '@adhirajsharma', region: 'Delhi, IN', age: 24,
     joined: 'Mar 2024', movement: 1, peak: 2, weeks: 38,
-    tagline: 'The most complete profile below the throne.',
-    bio: 'A rare Fraud with no scoring weakness. Adhiraj grades above 88 in all ten qualities, which no other ranked figure currently manages. The panel has repeatedly flagged business acumen as the only lane separating him from the summit, and the gap has narrowed in each of the last four cycles.',
-    stats: { height: 93, frame: 96, transformation: 94, aesthetics: 97, grooming: 96, drip: 95, business: 88, social: 94, personality: 93, longevity: 91 }
+    tagline: 'One hundredth of a point off the throne. The closest the board has ever been.',
+    bio: 'A rare Fraud with no scoring weakness: Adhiraj grades above 92 in all ten qualities, which no other ranked figure has ever managed. Four consecutive cycles of gains have closed a two-point deficit to 0.01, and the panel has confirmed the margin is real rather than a rounding artefact — the business acumen lane was graded to a decimal specifically to separate them.',
+    stats: { height: 95, frame: 97, transformation: 96, aesthetics: 98, grooming: 97, drip: 96, business: 92.9, social: 96, personality: 95, longevity: 95 }
   },
   {
-    id: 'f003', name: 'Clav', nickname: 'The Clavicle', handle: '@clav', region: 'London, UK', age: 29,
+    id: 'f003', name: 'Clav', nickname: 'Prince of BP', handle: '@clav', region: 'London, UK', age: 29,
     joined: 'Jan 2024', movement: -1, peak: 1, weeks: 41,
     tagline: 'Former #1. Slipping on social resonance, immovable everywhere else.',
     bio: 'Held the top position for the first six cycles of the modern era. Clav remains the highest-graded frame in the verse — the 99 is the only one the panel has ever issued for structure — but a quiet quarter across media has cost him ground in the aggregate three cycles running.',
@@ -232,7 +232,7 @@ var NEWS = [
     body: [
       'The headline of the cycle is Zephyr Locke, who converts the highest transformation grade ever recorded by the panel into a top-ten placement twenty-nine cycles after entering at #61. Nothing about the underlying profile is remarkable — the frame grades below several figures ranked beneath him — but the panel has now upgraded his transformation lane in seven consecutive cycles, and at 10% of the aggregate that compounds.',
       'At the other end, Konstantin Reyes gives back four positions after the largest conduct adjustment the panel has issued. His physical grades are untouched; personality and social resonance both fell, and two lanes moving together is worth more than any single lane can absorb.',
-      'The top three held. Parth Mehta extends his run at the summit to eleven cycles, Adhiraj Sharma keeps second on the strength of the most complete profile on the board, and Clav concedes nothing structurally while continuing to leak ground on media.',
+      'The top three held, but only just. Parth Mehta extends his run at the summit to eleven cycles on an aggregate of 95.80 against Adhiraj Sharma\'s 95.79 — a hundredth of a point, the narrowest margin in the history of the board and the first time the panel has had to grade a lane to a decimal to separate two figures. Clav concedes nothing structurally while continuing to leak ground on media.',
       'Elsewhere: Theo Marchetti and Ronan Blackwood both posted their fourth straight positive cycle, Emeric Sloan drew a second consecutive overrated flag from the community, and Hugo Vantablack set a ranking record by holding the same position for a fourth cycle running.'
     ]
   },
@@ -265,11 +265,11 @@ var NEWS = [
   },
   {
     id: 'c37', cycle: 37, date: '16 August 2026', tag: 'Cycle report',
-    title: 'Party extends to nine as the Mythic tier stays a population of one',
-    lede: 'For the ninth consecutive cycle the Mythic tier contains exactly one name, and the gap between first and second has widened again.',
+    title: 'The Mythic tier takes a second name as Adhiraj closes to a hundredth',
+    lede: 'After nine cycles as a population of one, the Mythic tier admits a second figure — and the two are separated by less than the panel usually bothers to measure.',
     body: [
-      'Parth Mehta moves to 95.8 and remains the only figure above the 95.0 Mythic threshold. Adhiraj Sharma sits 2.1 points back with the most balanced profile on the board and no obvious route to closing the gap other than a commercial venture.',
-      'The panel notes that the Mythic threshold has never been adjusted and will not be. A tier that admits three or four figures per cycle stops describing anything.'
+      'Parth Mehta holds 95.80. Adhiraj Sharma crosses the 95.0 Mythic threshold at 95.79 after upgrades in six lanes, ending the longest run of solo occupancy the tier has had.',
+      'The panel notes that the Mythic threshold has never been adjusted and will not be. A tier that admits three or four figures per cycle stops describing anything — two, separated by a hundredth, describes a great deal.'
     ]
   },
   {

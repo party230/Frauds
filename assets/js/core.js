@@ -106,8 +106,11 @@ function sentiment(fraud) {
   return { rise: base, over: 100 - base };
 }
 
-/* ---------- formatting ---------- */
-const fmt = n => n.toFixed(1);
+/* ---------- formatting ---------- *
+ * Aggregates are shown to two decimals: cycle 41 separates first and second
+ * by a hundredth of a point, and one decimal would hide it.
+ */
+const fmt = n => Number(n).toFixed(2);
 
 function movementMarkup(n) {
   if (n > 0) return `<span class="mv up">&#9650; ${n}</span>`;
