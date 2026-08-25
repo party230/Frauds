@@ -23,7 +23,8 @@ npm start        # http://127.0.0.1:8080 — site and API on one origin
 | `index.html` | Home — hero, headline numbers, top-three podium, risers/fallers, top ten, latest cycle reports, membership |
 | `rankings.html` | The complete board — search, sort, tier chips, region filter, rank-by-any-quality, watchlist-only, pagination |
 | `profile.html?id=f006` | One Fraud — ten grade bars against the board average, 12-cycle rank history chart, record, voting, nearby ranks |
-| `compare.html?a=f001&b=f003` | Head to head — quality-by-quality split bars, per-quality winners, panel verdict, swap and shuffle |
+| `compare.html?a=f001&b=f003` | Head to head — any two Frauds: PSL and Appeal side by side, quality-by-quality split bars, per-quality winners, panel verdict, swap and shuffle |
+| `rivalry.html` | The marquee pairing — Party vs Adhilice, the 0.01 margin, the PSL/Appeal split, the chase from 2.10 down, the verdict |
 | `news.html` / `article.html?id=c41` | Cycle reports index and article, with the board's top five alongside and prev/next |
 | `looksmax.html` | The looksmaxxing desk — category chips, search, saved-only, quickest-read sort, and the daily routine tracker |
 | `looksmax-article.html?id=lm01` | One protocol: the piece, the checklist, the verdict, which graded quality it feeds, related reading |
@@ -39,6 +40,18 @@ npm start        # http://127.0.0.1:8080 — site and API on one origin
 | `404.html` | Unranked |
 
 ## The interactive bits
+
+- **Compare any two** — every board row carries a compare toggle. Pick two anywhere on the board and
+  a tray rises with both names and a link straight into the head-to-head; a third pick replaces the
+  oldest. Profiles link into it too, and `compare.html?a=…&b=…` is shareable.
+- **Dossiers** — the top three carry a full profile beyond the ten grades: a status line, a pull
+  quote and signature look, vitals (height, weight, clavicle, wingspan, debut), the lanes carrying
+  the profile against the ones the panel is watching, ventures, a daily protocol, a cycle-by-cycle
+  timeline and a rivalry card. Frauds without one simply do not render those sections.
+- **PSL and Appeal** — two published readings that sit beside the aggregate without feeding it.
+  PSL (1–10) weighs the structural lanes: aesthetics at half, then frame, grooming and height.
+  Appeal weighs what a room reacts to: social resonance, personality, business and drip. Cycle 41's
+  top two split them one each, which is the site's own argument for grading ten qualities evenly.
 
 - **Looksmax desk** (`looksmax.html`) — a vertical separate from the cycle reports: ten pieces across
   nine categories (jaw and mewing, skin, hair, frame, sleep, diet, style, posture, angles), each with

@@ -27,6 +27,8 @@ App.ready(() => {
       <span class="tier tier-prospect">${movementLabel(fraud.movement)}</span>
       <span class="tier tier-prospect">Peak #${fraud.peak}</span>
       <span class="tier tier-prospect">${fraud.weeks} cycles ranked</span>
+      <span class="tier tier-mythic">PSL ${pslOf(fraud).toFixed(1)} · ${pslLabel(pslOf(fraud))}</span>
+      <span class="tier tier-elite">Appeal ${appealOf(fraud).toFixed(1)}</span>
     </div>
     <div class="profile-actions"></div>`;
   head.appendChild(meta);
@@ -84,6 +86,9 @@ App.ready(() => {
 
   /* ----- vote ----- */
   document.getElementById('vote-host').appendChild(voteControls(fraud));
+
+  /* ----- the dossier ----- */
+  renderDossier(fraud, field);
 
   /* ----- what the verse grades him ----- */
   initCommunityGrade(fraud);
@@ -179,4 +184,103 @@ function initCommunityGrade(fraud) {
   }
 
   draw(fraud.community, Store.ratingFor(fraud.id));
+}
+
+
+/* Everything the panel publishes beyond the ten grades. Frauds without a
+   dossier simply do not render these sections. */
+function renderDossier(fraud, field) {
+  const pr = fraud.profile || {};
+
+  const status = document.getElementById('status-line');
+  if (status && pr.status) {
+    status.innerHTML = `<span class="status-pill">${pr.status}</span>`;
+    status.classList.add('show');
+  }
+
+  const quote = document.getElementById('quote-card');
+  if (quote && pr.quote) {
+    quote.innerHTML = `
+      <blockquote class="pull-quote">${pr.quote}</blockquote>
+      <div class="quote-by">&mdash; ${fraud.name}${fraud.nickname ? ', &ldquo;' + fraud.nickname + '&rdquo;' : ''}</div>
+      ${pr.signature ? `<p class="sig-line">${pr.signature}</p>` : ''}`;
+    quote.classList.add('show');
+  }
+
+  const readings = document.getElementById('readings');
+  if (readings) {
+    const psl = pslOf(fraud), appeal = appealOf(fraud);
+    const pslRank = field.slice().sort((a, b) => pslOf(b) - pslOf(a)).findIndex(f => f.id === fraud.id) + 1;
+    const appealRank = field.slice().sort((a, b) => appealOf(b) - appealOf(a)).findIndex(f => f.id === fraud.id) + 1;
+
+    readings.innerHTML = `
+      <div class="reading">
+        <div class="reading-v">${psl.toFixed(1)}</div>
+        <div class="reading-l">PSL &middot; ${pslLabel(psl)}</div>
+        <div class="reading-r">#${pslRank} of ${field.length} on structure</div>
+      </div>
+      <div class="reading">
+        <div class="reading-v">${appeal.toFixed(1)}</div>
+        <div class="reading-l">Appeal</div>
+        <div class="reading-r">#${appealRank} of ${field.length} in a room</div>
+      </div>`;
+    readings.classList.add('show');
+  }
+
+  const vitals = document.getElementById('vitals');
+  if (vitals && pr.vitals) {
+    vitals.innerHTML = `<div class="kv">${pr.vitals.map(([k, v]) => `<div><span>${k}</span><span>${v}</span></div>`).join('')}</div>`;
+    vitals.closest('.card').classList.add('show-card');
+  }
+
+  const lanes = document.getElementById('lanes');
+  if (lanes && (pr.strengths || pr.watch)) {
+    lanes.innerHTML = `
+      ${pr.strengths ? `<div class="lane-block"><div class="num-tag">Carrying the profile</div><ul class="check-list">${pr.strengths.map(x => `<li>${x}</li>`).join('')}</ul></div>` : ''}
+      ${pr.watch ? `<div class="lane-block"><div class="num-tag">Panel is watching</div><ul class="warn-list">${pr.watch.map(x => `<li>${x}</li>`).join('')}</ul></div>` : ''}`;
+    lanes.closest('.card').classList.add('show-card');
+  }
+
+  const ventures = document.getElementById('ventures');
+  if (ventures && pr.ventures) {
+    ventures.innerHTML = pr.ventures.map(v => `
+      <div class="venture"><strong>${v.name}</strong><span>${v.note}</span></div>`).join('');
+    ventures.closest('.card').classList.add('show-card');
+  }
+
+  const protocol = document.getElementById('protocol');
+  if (protocol && pr.protocol) {
+    protocol.innerHTML = `<ul class="check-list">${pr.protocol.map(x => `<li>${x}</li>`).join('')}</ul>`;
+    protocol.closest('.card').classList.add('show-card');
+  }
+
+  const timeline = document.getElementById('timeline');
+  if (timeline && pr.milestones) {
+    timeline.innerHTML = pr.milestones.map(m => `
+      <div class="mile">
+        <span class="mile-cycle">Cycle ${m.cycle}</span>
+        <span class="mile-note">${m.note}</span>
+      </div>`).join('');
+    timeline.closest('.card').classList.add('show-card');
+  }
+
+  const rival = document.getElementById('rival-card');
+  if (rival && pr.rival) {
+    const other = field.find(f => f.id === pr.rival);
+    if (other) {
+      const gap = Math.abs(fraud.score - other.score);
+      rival.innerHTML = `
+        <div class="num-tag">The rivalry</div>
+        <h3>${fraud.name.split(' ')[0]} vs ${other.name.split(' ')[0]}</h3>
+        <p>${gap < 0.5
+          ? `Separated by <strong>${fmt(gap)}</strong> points — the closest pairing the board has ever produced.`
+          : `${other.name} sits ${fmt(gap)} points ${other.score > fraud.score ? 'ahead' : 'behind'} at #${other.rank}.`}</p>
+        <div class="profile-actions" style="margin-top:16px">
+          ${(fraud.id === 'f001' && other.id === 'f002') || (fraud.id === 'f002' && other.id === 'f001')
+            ? '<a class="btn btn-gold btn-sm" href="rivalry.html">Open the rivalry page</a>' : ''}
+          <a class="btn btn-sm" href="compare.html?a=${fraud.id}&b=${other.id}">Head to head</a>
+        </div>`;
+      rival.classList.add('show');
+    }
+  }
 }

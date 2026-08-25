@@ -29,6 +29,19 @@ App.ready(() => {
     document.getElementById('card-a').innerHTML = sideMarkup(a);
     document.getElementById('card-b').innerHTML = sideMarkup(b);
 
+    /* the two published readings, side by side, before the ten grades */
+    const readings = [
+      { label: 'PSL', hint: 'Aesthetics, frame, grooming, height', va: pslOf(a), vb: pslOf(b), dp: 1,
+        tagA: pslLabel(pslOf(a)), tagB: pslLabel(pslOf(b)) },
+      { label: 'Appeal', hint: 'Social, personality, business, drip', va: appealOf(a), vb: appealOf(b), dp: 1 }
+    ];
+    document.getElementById('readings-row').innerHTML = readings.map(r => `
+      <div class="reading-row">
+        <div class="rr-side ${r.va >= r.vb ? 'win' : ''}">${r.va.toFixed(r.dp)}${r.tagA ? `<em>${r.tagA}</em>` : ''}</div>
+        <div class="rr-mid"><strong>${r.label}</strong><span>${r.hint}</span></div>
+        <div class="rr-side ${r.vb >= r.va ? 'win' : ''}">${r.vb.toFixed(r.dp)}${r.tagB ? `<em>${r.tagB}</em>` : ''}</div>
+      </div>`).join('');
+
     let winsA = 0, winsB = 0, draws = 0;
     document.getElementById('rows').innerHTML = CATEGORIES.map(c => {
       const va = a.stats[c.key], vb = b.stats[c.key];

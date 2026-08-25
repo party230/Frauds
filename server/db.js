@@ -55,6 +55,7 @@ function migrate(db) {
       tagline        TEXT NOT NULL,
       bio            TEXT NOT NULL,
       stats          TEXT NOT NULL,
+      profile        TEXT NOT NULL DEFAULT '{}',
       baseline_rise  INTEGER NOT NULL DEFAULT 0,
       baseline_over  INTEGER NOT NULL DEFAULT 0
     );
@@ -157,6 +158,7 @@ function migrate(db) {
   /* nickname arrived after the first release */
   const cols = db.prepare('PRAGMA table_info(frauds)').all().map(c => c.name);
   if (!cols.includes('nickname')) db.exec("ALTER TABLE frauds ADD COLUMN nickname TEXT NOT NULL DEFAULT ''");
+  if (!cols.includes('profile')) db.exec("ALTER TABLE frauds ADD COLUMN profile TEXT NOT NULL DEFAULT '{}'");
 }
 
 /* Frauds are reference data: refreshed from the dataset on every boot so
@@ -165,19 +167,19 @@ function migrate(db) {
 function seed(db) {
   const { FRAUDS, CATEGORIES } = dataset.load();
   const up = db.prepare(`
-    INSERT INTO frauds (id, name, nickname, handle, region, age, joined, movement, peak, weeks, tagline, bio, stats, baseline_rise, baseline_over)
-    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+    INSERT INTO frauds (id, name, nickname, handle, region, age, joined, movement, peak, weeks, tagline, bio, stats, profile, baseline_rise, baseline_over)
+    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
     ON CONFLICT(id) DO UPDATE SET
       name=excluded.name, nickname=excluded.nickname, handle=excluded.handle, region=excluded.region, age=excluded.age,
       joined=excluded.joined, movement=excluded.movement, peak=excluded.peak, weeks=excluded.weeks,
-      tagline=excluded.tagline, bio=excluded.bio, stats=excluded.stats,
+      tagline=excluded.tagline, bio=excluded.bio, stats=excluded.stats, profile=excluded.profile,
       baseline_rise=excluded.baseline_rise, baseline_over=excluded.baseline_over
   `);
 
   for (const f of FRAUDS) {
     const base = dataset.baselineSentiment(f, CATEGORIES);
     up.run(f.id, f.name, f.nickname || '', f.handle, f.region, f.age, f.joined, f.movement, f.peak, f.weeks,
-           f.tagline, f.bio, JSON.stringify(f.stats), base.rise, base.over);
+           f.tagline, f.bio, JSON.stringify(f.stats), JSON.stringify(f.profile || {}), base.rise, base.over);
   }
 }
 

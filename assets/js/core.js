@@ -97,6 +97,30 @@ function rankHistory(fraud, size) {
   return out;
 }
 
+/* ---------- PSL and Appeal ---------- *
+ * Two published readings that sit beside the aggregate rather than inside it.
+ * PSL weighs the structural lanes; Appeal weighs the ones a room reacts to.
+ * Neither feeds the ranking — the aggregate is still the flat mean of ten.
+ */
+function pslOf(fraud) {
+  const s = fraud.stats;
+  const structural = s.aesthetics * 0.50 + s.frame * 0.25 + s.grooming * 0.15 + s.height * 0.10;
+  return Math.round(Math.min(10, Math.max(1, structural * 0.11 - 1.8)) * 10) / 10;
+}
+
+function appealOf(fraud) {
+  const s = fraud.stats;
+  return Math.round((s.social * 0.45 + s.personality * 0.25 + s.business * 0.20 + s.drip * 0.10) * 10) / 10;
+}
+
+function pslLabel(psl) {
+  if (psl >= 9.0) return 'PSL God';
+  if (psl >= 8.5) return 'Chad';
+  if (psl >= 8.0) return 'Chadlite';
+  if (psl >= 7.5) return 'High-tier';
+  return 'Mid-tier';
+}
+
 /* Community split. The backend returns real tallies; offline this is the
  * deterministic baseline the seed data was built from. */
 function sentiment(fraud) {

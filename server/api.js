@@ -56,6 +56,7 @@ function fraudRows(db) {
     id: r.id, name: r.name, nickname: r.nickname || '', handle: r.handle, region: r.region, age: r.age,
     joined: r.joined, movement: r.movement, peak: r.peak, weeks: r.weeks,
     tagline: r.tagline, bio: r.bio, stats: JSON.parse(r.stats),
+    profile: JSON.parse(r.profile || '{}'),
     baseline: { rise: r.baseline_rise, over: r.baseline_over }
   }));
 }

@@ -125,6 +125,7 @@ function renderFooter() {
             <a href="rankings.html?sort=movers">Biggest risers</a>
             <a href="rankings.html?sort=fallers">Biggest fallers</a>
             <a href="compare.html">Head to head</a>
+            <a href="rivalry.html">The rivalry: Party vs Adhilice</a>
           </div>
           <div>
             <h4>How it works</h4>
@@ -299,6 +300,96 @@ function watchButton(fraud, withLabel) {
   return b;
 }
 
+/* ---------- pick any two and compare them ---------- *
+ * Every board row carries a compare toggle; picking two raises a tray that
+ * takes you straight into the head-to-head.
+ */
+const Compare = (() => {
+  const picks = [];
+  const watchers = [];
+
+  function tray() {
+    let el = document.querySelector('.compare-tray');
+    if (!el) {
+      el = document.createElement('div');
+      el.className = 'compare-tray';
+      document.body.appendChild(el);
+    }
+    return el;
+  }
+
+  function draw() {
+    const el = tray();
+    if (!picks.length) { el.classList.remove('in'); return; }
+
+    const field = rankedField();
+    const chips = picks.map(id => {
+      const f = field.find(x => x.id === id);
+      return `<button class="ct-chip" data-drop="${id}" type="button">${f.name}<em>#${f.rank} · ${fmt(f.score)}</em><span>&times;</span></button>`;
+    }).join('<span class="ct-v">vs</span>');
+
+    el.innerHTML = `
+      <div class="ct-inner">
+        <span class="ct-label">Compare</span>
+        <div class="ct-picks">${chips}${picks.length === 1 ? '<span class="ct-hint">pick one more</span>' : ''}</div>
+        <div class="ct-actions">
+          <button class="btn btn-sm" type="button" data-clear>Clear</button>
+          <a class="btn btn-gold btn-sm${picks.length < 2 ? ' disabled' : ''}"
+             href="${picks.length === 2 ? `compare.html?a=${picks[0]}&b=${picks[1]}` : '#'}">Head to head</a>
+        </div>
+      </div>`;
+    el.classList.add('in');
+
+    el.querySelectorAll('[data-drop]').forEach(b => b.addEventListener('click', () => Compare.toggle(b.dataset.drop)));
+    el.querySelector('[data-clear]').addEventListener('click', () => Compare.clear());
+  }
+
+  return {
+    has: id => picks.indexOf(id) > -1,
+    on(fn) { watchers.push(fn); },
+
+    toggle(id) {
+      const i = picks.indexOf(id);
+      if (i > -1) picks.splice(i, 1);
+      else {
+        picks.push(id);
+        if (picks.length > 2) picks.shift();          /* a third pick replaces the oldest */
+      }
+      draw();
+      watchers.forEach(fn => fn(picks.slice()));
+      return picks.indexOf(id) > -1;
+    },
+
+    clear() {
+      picks.length = 0;
+      draw();
+      watchers.forEach(fn => fn([]));
+    }
+  };
+})();
+
+function compareButton(fraud) {
+  const b = document.createElement('button');
+  b.type = 'button';
+  const paint = () => {
+    const on = Compare.has(fraud.id);
+    b.className = 'cmp' + (on ? ' on' : '');
+    b.title = on ? 'Remove from the comparison' : 'Compare ' + fraud.name;
+    b.setAttribute('aria-pressed', String(on));
+    b.innerHTML = '&#8646;';
+  };
+  paint();
+  Compare.on(paint);
+  b.addEventListener('click', ev => {
+    ev.stopPropagation();
+    ev.preventDefault();
+    const on = Compare.toggle(fraud.id);
+    paint();
+    if (on) toast(fraud.name + ' added to the comparison.');
+  });
+  return b;
+}
+
 /* ---------- board rows (shared by home and rankings) ---------- */
 function boardRow(f, opts) {
   opts = opts || {};
@@ -338,6 +429,7 @@ function boardRow(f, opts) {
 
   const act = document.createElement('div');
   act.className = 'row-act';
+  act.appendChild(compareButton(f));
   act.appendChild(watchButton(f));
   row.append(act);
   return row;
@@ -364,7 +456,8 @@ function planCardMarkup(p) {
 /* ---------- command palette (Ctrl/Cmd + K) ---------- */
 const PAGE_TARGETS = [
   { label: 'The full board', href: 'rankings.html', kind: 'Page' },
-  { label: 'Head to head', href: 'compare.html', kind: 'Page' },
+  { label: 'Head to head — compare any two', href: 'compare.html', kind: 'Page' },
+  { label: 'The rivalry: Party vs Adhilice', href: 'rivalry.html', kind: 'Page' },
   { label: 'The Fraud Test', href: 'test.html', kind: 'Page' },
   { label: 'Looksmax desk', href: 'looksmax.html', kind: 'Page' },
   { label: 'Cycle reports', href: 'news.html', kind: 'Page' },
