@@ -20,6 +20,7 @@ App.ready(() => {
   meta.innerHTML = `
     <div class="eyebrow">Rank #${fraud.rank} of ${field.length} · Cycle ${CURRENT_CYCLE}</div>
     <h1>${fraud.name}</h1>
+    ${fraud.nickname ? `<div class="nick-line">the verse calls him &ldquo;${fraud.nickname}&rdquo;</div>` : ''}
     <div class="handle">${fraud.handle} · ${fraud.region} · ${fraud.age}</div>
     <div class="tags">
       <span class="tier tier-${fraud.tier.key}">${fraud.tier.label}</span>
@@ -84,6 +85,9 @@ App.ready(() => {
   /* ----- vote ----- */
   document.getElementById('vote-host').appendChild(voteControls(fraud));
 
+  /* ----- what the verse grades him ----- */
+  initCommunityGrade(fraud);
+
   /* ----- neighbours ----- */
   const near = field.filter(f => Math.abs(f.rank - fraud.rank) <= 2 && f.id !== fraud.id).slice(0, 4);
   document.getElementById('nearby').innerHTML = near.map(f => `
@@ -121,4 +125,58 @@ function drawHistory(fraud, size) {
       '<text class="lbl" x="' + PAD + '" y="' + (PAD - 8) + '">#' + lo + '</text>' +
       '<text class="lbl" x="' + PAD + '" y="' + (H - PAD - 8) + '">#' + hi + '</text>' +
     '</svg>';
+}
+
+
+/* Members grade a Fraud themselves; the average sits next to the panel's. */
+function initCommunityGrade(fraud) {
+  const host = document.getElementById('grade-host');
+  if (!host) return;
+
+  function draw(community, mine) {
+    const avg = community && community.count ? community.average : null;
+    const gap = avg == null ? null : (avg - fraud.score);
+
+    host.innerHTML = `
+      <div class="grade-compare">
+        <div class="gc-cell">
+          <span class="gc-v">${fmt(fraud.score)}</span>
+          <span class="gc-l">Panel</span>
+        </div>
+        <div class="gc-cell">
+          <span class="gc-v ${avg == null ? 'dim' : ''}">${avg == null ? '—' : avg.toFixed(1)}</span>
+          <span class="gc-l">The verse${community && community.count ? ' · ' + community.count + (community.count === 1 ? ' grade' : ' grades') : ''}</span>
+        </div>
+      </div>
+      ${gap == null ? '' : `<p class="gc-note">${Math.abs(gap) < 1
+        ? 'The verse and the panel agree within a point.'
+        : (gap > 0 ? 'Members grade him ' + gap.toFixed(1) + ' points higher than the panel does.'
+                   : 'Members grade him ' + Math.abs(gap).toFixed(1) + ' points lower than the panel does.')}</p>`}
+      <div class="slider-row grade-row">
+        <label for="my-grade">Your grade</label>
+        <input id="my-grade" type="range" min="0" max="100" step="1" value="${mine == null ? Math.round(fraud.score) : mine}">
+        <output id="my-grade-out">${mine == null ? Math.round(fraud.score) : mine}</output>
+      </div>
+      <button class="btn btn-gold btn-sm btn-block" type="button" id="submit-grade">${mine == null ? 'Submit your grade' : 'Update your grade'}</button>`;
+
+    const slider = host.querySelector('#my-grade');
+    const out = host.querySelector('#my-grade-out');
+    slider.addEventListener('input', () => { out.textContent = slider.value; });
+
+    host.querySelector('#submit-grade').addEventListener('click', async ev => {
+      if (!Store.isSignedIn()) return promptSignIn();
+      const btn = ev.currentTarget;
+      btn.disabled = true;
+      try {
+        const res = await Store.rate(fraud.id, +slider.value);
+        draw(res.community, res.score);
+        toast('Graded ' + fraud.name + ' at ' + res.score + '.');
+      } catch (err) {
+        apiFail(err, 'That grade did not save.');
+        btn.disabled = false;
+      }
+    });
+  }
+
+  draw(fraud.community, Store.ratingFor(fraud.id));
 }

@@ -18,24 +18,24 @@ var CATEGORIES = [
 
 var FRAUDS = [
   {
-    id: 'f001', name: 'Baron Vexley', handle: '@baronvexley', region: 'Miami, FL', age: 27,
+    id: 'f001', name: 'Parth Mehta', nickname: 'Party', handle: '@party', region: 'Mumbai, IN', age: 27,
     joined: 'Jan 2024', movement: 0, peak: 1, weeks: 41,
     tagline: 'Undisputed. Has not surrendered the top slot in eleven consecutive cycles.',
-    bio: 'The measuring stick of the Fraud Verse. Baron entered the rankings at #14 and climbed to the summit in under four months, largely on the back of a transformation arc the panel graded as generational. Runs a supplement label, two gyms and a media arm.',
+    bio: 'The measuring stick of the Fraud Verse. Party entered the rankings at #14 and climbed to the summit in under four months, largely on the back of a transformation arc the panel graded as generational. Runs a supplement label, two gyms and a media arm, and has never once posted a negative cycle at the top.',
     stats: { height: 97, frame: 98, transformation: 96, aesthetics: 95, grooming: 94, drip: 92, business: 96, social: 98, personality: 95, longevity: 97 }
   },
   {
-    id: 'f002', name: 'Sylas Kane', handle: '@sylaskane', region: 'Los Angeles, CA', age: 24,
+    id: 'f002', name: 'Adhiraj Sharma', nickname: 'Raj', handle: '@adhirajsharma', region: 'Delhi, IN', age: 24,
     joined: 'Mar 2024', movement: 1, peak: 2, weeks: 38,
     tagline: 'The most complete profile below the throne.',
-    bio: 'A rare Fraud with no scoring weakness. Sylas grades above 88 in all ten qualities, which no other ranked figure currently manages. The panel has repeatedly flagged business acumen as the only lane separating him from #1.',
+    bio: 'A rare Fraud with no scoring weakness. Adhiraj grades above 88 in all ten qualities, which no other ranked figure currently manages. The panel has repeatedly flagged business acumen as the only lane separating him from the summit, and the gap has narrowed in each of the last four cycles.',
     stats: { height: 93, frame: 96, transformation: 94, aesthetics: 97, grooming: 96, drip: 95, business: 88, social: 94, personality: 93, longevity: 91 }
   },
   {
-    id: 'f003', name: 'Dominic Ash', handle: '@domash', region: 'London, UK', age: 29,
+    id: 'f003', name: 'Clav', nickname: 'The Clavicle', handle: '@clav', region: 'London, UK', age: 29,
     joined: 'Jan 2024', movement: -1, peak: 1, weeks: 41,
     tagline: 'Former #1. Slipping on social resonance, immovable everywhere else.',
-    bio: 'Held the top position for the first six cycles of the modern era. Dominic remains the highest-graded frame in the verse, but a quiet quarter across media has cost him ground in the aggregate three cycles running.',
+    bio: 'Held the top position for the first six cycles of the modern era. Clav remains the highest-graded frame in the verse — the 99 is the only one the panel has ever issued for structure — but a quiet quarter across media has cost him ground in the aggregate three cycles running.',
     stats: { height: 95, frame: 99, transformation: 89, aesthetics: 93, grooming: 91, drip: 90, business: 94, social: 85, personality: 96, longevity: 95 }
   },
   {
@@ -232,7 +232,7 @@ var NEWS = [
     body: [
       'The headline of the cycle is Zephyr Locke, who converts the highest transformation grade ever recorded by the panel into a top-ten placement twenty-nine cycles after entering at #61. Nothing about the underlying profile is remarkable — the frame grades below several figures ranked beneath him — but the panel has now upgraded his transformation lane in seven consecutive cycles, and at 10% of the aggregate that compounds.',
       'At the other end, Konstantin Reyes gives back four positions after the largest conduct adjustment the panel has issued. His physical grades are untouched; personality and social resonance both fell, and two lanes moving together is worth more than any single lane can absorb.',
-      'The top three held. Baron Vexley extends his run at the summit to eleven cycles, Sylas Kane keeps second on the strength of the most complete profile on the board, and Dominic Ash concedes nothing structurally while continuing to leak ground on media.',
+      'The top three held. Parth Mehta extends his run at the summit to eleven cycles, Adhiraj Sharma keeps second on the strength of the most complete profile on the board, and Clav concedes nothing structurally while continuing to leak ground on media.',
       'Elsewhere: Theo Marchetti and Ronan Blackwood both posted their fourth straight positive cycle, Emeric Sloan drew a second consecutive overrated flag from the community, and Hugo Vantablack set a ranking record by holding the same position for a fourth cycle running.'
     ]
   },
@@ -265,10 +265,10 @@ var NEWS = [
   },
   {
     id: 'c37', cycle: 37, date: '16 August 2026', tag: 'Cycle report',
-    title: 'Vexley extends to nine as the Mythic tier stays a population of one',
+    title: 'Party extends to nine as the Mythic tier stays a population of one',
     lede: 'For the ninth consecutive cycle the Mythic tier contains exactly one name, and the gap between first and second has widened again.',
     body: [
-      'Baron Vexley moves to 95.8 and remains the only figure above the 95.0 Mythic threshold. Sylas Kane sits 2.1 points back with the most balanced profile on the board and no obvious route to closing the gap other than a commercial venture.',
+      'Parth Mehta moves to 95.8 and remains the only figure above the 95.0 Mythic threshold. Adhiraj Sharma sits 2.1 points back with the most balanced profile on the board and no obvious route to closing the gap other than a commercial venture.',
       'The panel notes that the Mythic threshold has never been adjusted and will not be. A tier that admits three or four figures per cycle stops describing anything.'
     ]
   },
@@ -281,4 +281,215 @@ var NEWS = [
       'This does not mean votes set grades. The panel grades; sustained sentiment decides what gets re-examined.'
     ]
   }
+];
+
+
+/* ---------- looksmaxxing desk ---------- *
+ * A separate vertical from the cycle reports: protocol, evidence and gear,
+ * nothing about the board itself.
+ */
+var LOOKSMAX_CATEGORIES = [
+  { key: 'jaw',      label: 'Jaw & Mewing' },
+  { key: 'skin',     label: 'Skin' },
+  { key: 'hair',     label: 'Hair' },
+  { key: 'frame',    label: 'Frame & Training' },
+  { key: 'sleep',    label: 'Sleep & Recovery' },
+  { key: 'diet',     label: 'Diet' },
+  { key: 'style',    label: 'Style & Grooming' },
+  { key: 'posture',  label: 'Posture' },
+  { key: 'angles',   label: 'Angles & Photos' }
+];
+
+var LOOKSMAX = [
+  {
+    id: 'lm01', category: 'jaw', date: '24 August 2026', readMinutes: 6,
+    tags: ['mewing', 'jawline', 'evidence'],
+    title: 'Mewing, honestly: what tongue posture does and does not do',
+    lede: 'The most argued-about protocol in the verse, separated into the part with a plausible mechanism and the part that is wishful thinking.',
+    body: [
+      'Resting tongue posture — the whole tongue flat against the palate, teeth lightly together, lips sealed, breathing through the nose — is cheap, safe and worth doing. What it plausibly changes in an adult is swelling, water retention and the way you carry your head, which is why the "results" that appear within a week are real but are not bone.',
+      'What it does not do in an adult is move the maxilla. Growth plates in the midface have fused; a tongue is not going to remodel them, and the before-and-afters that claim otherwise are almost always a change in body fat, lighting and camera height, in that order.',
+      'The honest version of the protocol: nasal breathing all day, tongue up whenever you are not eating or speaking, and a hard stop on mouth breathing at night — tape is popular but see a doctor first if you snore, because the thing you are taping over may be sleep apnoea.'
+    ],
+    protocol: [
+      'Tongue flat on the palate, not just the tip',
+      'Nasal breathing, all day, including on the treadmill',
+      'Teeth touching lightly, never clenched',
+      'Fix the airway before chasing the aesthetics'
+    ],
+    verdict: 'Worth doing. Not a jaw transplant.'
+  },
+  {
+    id: 'lm02', category: 'skin', date: '23 August 2026', readMinutes: 5,
+    tags: ['skin', 'routine', 'sunscreen'],
+    title: 'The four-product skin routine that beats the eleven-product one',
+    lede: 'Most of the returns in skin come from four things, and the eleven-step routine is mostly a tax on your patience.',
+    body: [
+      'Cleanser at night, moisturiser twice a day, a retinoid three nights a week, and sunscreen every single morning. That is the whole evidence-backed core. Everything after it is a rounding error you are paying a subscription for.',
+      'Sunscreen is the one nobody wants to hear about because it is boring and works on a ten-year horizon. It is also the single largest lever on how your face ages, which makes it the highest-return item in the verse per unit of effort.',
+      'Retinoids are the second lever and the one people quit fastest, because weeks two through six look worse than week zero. Start at the lowest strength, twice a week, buffer with moisturiser, and do not stack acids on top while your barrier is learning.'
+    ],
+    protocol: [
+      'AM: cleanse (water is fine), moisturise, SPF 30+',
+      'PM: cleanse, retinoid 3× a week, moisturise',
+      'Add nothing new for six weeks so you know what is working',
+      'Reapply sunscreen if you are outside past midday'
+    ],
+    verdict: 'Four products. Six weeks. No exceptions on the sunscreen.'
+  },
+  {
+    id: 'lm03', category: 'hair', date: '22 August 2026', readMinutes: 7,
+    tags: ['hair', 'maintenance', 'evidence'],
+    title: 'Hair: act early or accept it, but stop doing neither',
+    lede: 'The worst outcome in the verse is three years of denial followed by an intervention that would have worked three years ago.',
+    body: [
+      'Hair loss is progressive, and every intervention with evidence behind it is better at keeping what you have than at bringing back what you lost. That makes the timing of the decision more important than the choice itself.',
+      'The two options with real evidence are well documented and both are medical decisions with side-effect profiles — which means the conversation belongs with a doctor, not a forum. Anyone selling you certainty in a comment section is selling you something else.',
+      'The third option is the one the verse under-rates: cut it short, own the hairline, and put the effort into frame, skin and style, all of which respond faster than a follicle ever will.'
+    ],
+    protocol: [
+      'Take a photo under the same light every three months',
+      'Decide early — the question is timing, not vanity',
+      'Talk to a dermatologist before anything systemic',
+      'A short, sharp cut beats a defended hairline'
+    ],
+    verdict: 'The decision is the intervention. Make it.'
+  },
+  {
+    id: 'lm04', category: 'frame', date: '21 August 2026', readMinutes: 8,
+    tags: ['training', 'frame', 'shoulders'],
+    title: 'Frame is the highest-leverage grade you can actually move',
+    lede: 'Height is fixed and bone structure is fixed. Shoulder width, in the way anyone perceives it, is not.',
+    body: [
+      'Clavicle length is genetic. Everything hanging off it is not: side delts, upper back and the taper they create are the difference between a 79 frame grade and an 89, and they respond to two focused sessions a week.',
+      'The mistake is training the mirror — chest and arms — when the perceived frame is built on lateral raises, rows, and enough back thickness that a t-shirt has something to sit on. Volume beats intensity here; delts recover fast and want frequency.',
+      'The second mistake is skipping the body-fat conversation. A taper is a ratio, and the denominator is the waist. Nothing widens shoulders as fast as losing four kilos does.'
+    ],
+    protocol: [
+      'Side delts 3× a week, 12–20 reps, stop shy of failure',
+      'Rows and pull-downs for the width behind the taper',
+      'Keep the waist honest — the ratio is the point',
+      'Give it twelve weeks before you judge the change'
+    ],
+    verdict: 'The most movable grade on the board.'
+  },
+  {
+    id: 'lm05', category: 'sleep', date: '20 August 2026', readMinutes: 5,
+    tags: ['sleep', 'recovery', 'face'],
+    title: 'Sleep is a facial protocol, not a lifestyle preference',
+    lede: 'Nothing in the verse degrades a face faster than four consecutive bad nights, and nothing repairs it more cheaply.',
+    body: [
+      'Under-eye colour, midface puffiness and the slack look that people misdiagnose as fat are all downstream of sleep debt and the fluid handling that comes with it. Fix the nights and half of the morning complaints resolve on their own.',
+      'The lever that matters most is consistency of wake time, not total hours. A fixed alarm seven days a week does more for how you look on a Tuesday than an extra hour on Sunday ever will.',
+      'Side sleeping compresses one side of the face for six hours a night; if you wake up asymmetric and it settles by noon, that is the mechanism. Back sleeping fixes it if you can tolerate it.'
+    ],
+    protocol: [
+      'Fixed wake time, every day, weekends included',
+      'Last caffeine eight hours before bed',
+      'Cool, dark room — the boring advice is the working advice',
+      'Sleep on your back if you can stand it'
+    ],
+    verdict: 'The cheapest grade increase available.'
+  },
+  {
+    id: 'lm06', category: 'diet', date: '19 August 2026', readMinutes: 6,
+    tags: ['diet', 'water', 'bloat'],
+    title: 'Sodium, water and the puffiness you can fix by Thursday',
+    lede: 'Most "bad face days" are a fluid story, and the fluid story is controllable within seventy-two hours.',
+    body: [
+      'Salt load, alcohol and short sleep all pull the same lever, and the result shows up first in the eyelids and the jaw shadow. That is why the same face looks sharp on Wednesday and soft on Sunday with no change in body fat whatsoever.',
+      'The correction is not a cleanse or a supplement. It is three days of consistent water, unremarkable sodium, no alcohol, and eight hours a night, after which the face you thought you lost comes back.',
+      'The longer play is body-fat percentage, which sets the ceiling for definition — but nobody should be dieting to fix what is actually last night.'
+    ],
+    protocol: [
+      'Two to three litres of water daily, spread out',
+      'Keep sodium boring for 72 hours before anything photographed',
+      'Alcohol is the single biggest facial variable in the verse',
+      'Judge your face at the same hour, not at midnight'
+    ],
+    verdict: 'Fix the week before you diagnose the face.'
+  },
+  {
+    id: 'lm07', category: 'style', date: '18 August 2026', readMinutes: 6,
+    tags: ['style', 'fit', 'grooming'],
+    title: 'Fit beats brand: the tailoring rules the panel grades on',
+    lede: 'Style is 10% of the aggregate and the cheapest ten points on the board, because tailoring costs less than the shirt did.',
+    body: [
+      'The shoulder seam sits on the shoulder bone. That single rule outranks every logo decision anyone will make this year, and it is the first thing the panel looks at when grading drip.',
+      'The second rule is contrast: the eye reads a defined edge between top and bottom as structure. Monochrome hides the taper you spent twelve weeks building.',
+      'The third is maintenance. A grooming grade above 90 is mostly a haircut every three weeks instead of every six, and nails, brows and collar edges that nobody consciously notices until they are wrong.'
+    ],
+    protocol: [
+      'Tailor the shoulders, hem the sleeves, keep the rest',
+      'Three colours maximum, one of them structural',
+      'Haircut every three weeks, not when it annoys you',
+      'Shoes and collar carry more grade than the label does'
+    ],
+    verdict: 'Ten points, one tailor, ninety minutes.'
+  },
+  {
+    id: 'lm08', category: 'posture', date: '17 August 2026', readMinutes: 5,
+    tags: ['posture', 'neck', 'desk'],
+    title: 'Forward head posture is costing you a grade you already own',
+    lede: 'The most common structural complaint in the verse is not structural at all — it is a desk.',
+    body: [
+      'Forward head posture flattens the jaw shadow, shortens the neck and softens the profile, and it is almost entirely a load problem: the head sits ahead of the spine for nine hours, and the muscles that hold it back give up.',
+      'The fix is unglamorous and effective — chin tucks, upper back work, a monitor at eye height, and a standing break every hour. Three weeks in, the profile photo changes without a single thing about your bones changing.',
+      'The tell is a photo from the side, taken by somebody else, standing normally. Nobody sees their own posture accurately in a mirror because looking in a mirror corrects it.'
+    ],
+    protocol: [
+      'Chin tucks, 3 sets of 10, daily',
+      'Monitor top at eye height — books work fine',
+      'Rows and face pulls twice a week',
+      'Have someone photograph your profile monthly'
+    ],
+    verdict: 'A desk problem wearing a bone-structure costume.'
+  },
+  {
+    id: 'lm09', category: 'angles', date: '16 August 2026', readMinutes: 7,
+    tags: ['photos', 'angles', 'evidence'],
+    title: 'Camera height, focal length, and why your mirror lies',
+    lede: 'Half the transformations in the verse are a lens change. Learn the variables so you can tell progress from photography.',
+    body: [
+      'A phone held above eye level with a wide lens at arm\'s length enlarges whatever is closest — usually the nose and forehead — and shrinks the jaw. The same face at chest height, two metres back, on the telephoto lens, reads as an entirely different bone structure.',
+      'This is why progress photos need fixed variables: same lens, same distance, same height, same light, same time of day, neutral expression. Change one and the comparison is worthless.',
+      'It is also why the verse should be sceptical of any before-and-after where the "before" is a low-light selfie and the "after" is a shot somebody else took outdoors at golden hour.'
+    ],
+    protocol: [
+      'Camera at chest height, two metres back',
+      'Use the 2× or 3× lens, never the ultrawide',
+      'Same window, same hour, neutral face',
+      'Take the photo weekly, judge it monthly'
+    ],
+    verdict: 'Standardise the camera before you judge the face.'
+  },
+  {
+    id: 'lm10', category: 'skin', date: '15 August 2026', readMinutes: 4,
+    tags: ['skin', 'shaving', 'irritation'],
+    title: 'Stop wrecking your face every morning: the shaving audit',
+    lede: 'Redness, bumps and the perpetual irritation half the verse treats as skin type are usually a blade problem.',
+    body: [
+      'A dull blade drags rather than cuts, which is what causes the irritation people then treat with harsher products, which irritates further. Changing the blade every five to seven shaves ends the cycle faster than any serum.',
+      'Shave after a warm shower, with the grain first, and stop chasing the last visible shadow — the second and third passes against the grain are where ingrowns come from.',
+      'Then leave it alone. No alcohol-heavy aftershave on a face you just abraded; moisturiser and sunscreen, same as any other morning.'
+    ],
+    protocol: [
+      'New blade every 5–7 shaves',
+      'Warm water first, with the grain, one pass',
+      'Skip the alcohol aftershave',
+      'Moisturise while the face is still damp'
+    ],
+    verdict: 'Not your skin type. Your blade.'
+  }
+];
+
+/* ---------- daily routine tracker ---------- */
+var HABITS = [
+  { key: 'mew',    label: 'Tongue posture all day', hint: 'Nasal breathing, tongue on the palate.' },
+  { key: 'skin',   label: 'Skin routine',           hint: 'Cleanse, moisturise, SPF in the morning.' },
+  { key: 'train',  label: 'Training session',       hint: 'Frame work counts double this cycle.' },
+  { key: 'water',  label: '2L water',               hint: 'Spread out, not all at 11pm.' },
+  { key: 'sleep',  label: '7+ hours, fixed wake',   hint: 'Consistency beats total hours.' },
+  { key: 'posture',label: 'Posture set',            hint: 'Chin tucks and a monitor at eye height.' },
+  { key: 'sun',    label: 'Sunscreen reapplied',    hint: 'Only counts if you were outside past midday.' }
 ];

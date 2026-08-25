@@ -4,12 +4,13 @@
 
 /* ---------- site header / footer ---------- */
 const NAV = [
-  { href: 'index.html',      label: 'Home'          },
-  { href: 'rankings.html',   label: 'Rankings'      },
-  { href: 'compare.html',    label: 'Compare'       },
-  { href: 'news.html',       label: 'Cycle Reports' },
-  { href: 'about.html',      label: 'Methodology'   },
-  { href: 'membership.html', label: 'Membership'    }
+  { href: 'rankings.html',   label: 'Rankings'   },
+  { href: 'compare.html',    label: 'Compare'    },
+  { href: 'test.html',       label: 'Fraud Test' },
+  { href: 'looksmax.html',   label: 'Looksmax'   },
+  { href: 'news.html',       label: 'Reports'    },
+  { href: 'about.html',      label: 'Methodology'},
+  { href: 'membership.html', label: 'Membership' }
 ];
 
 function currentPage() {
@@ -42,6 +43,9 @@ function renderHeader() {
             : `<a class="nav-only" href="login.html">Sign in</a>`}
         </nav>
         <div class="head-cta">
+          <button class="search-btn" type="button" data-palette aria-label="Search the verse">
+            <span>&#9906;</span><kbd>${/Mac|iPhone|iPad/.test(navigator.platform) ? '\u2318' : 'Ctrl'} K</kbd>
+          </button>
           ${signedIn ? accountMenuMarkup(s) : `<a class="btn btn-gold btn-sm" href="login.html">Sign in</a>`}
         </div>
         <button class="burger" type="button" aria-label="Menu" aria-expanded="false">&#9776;</button>
@@ -63,6 +67,8 @@ function renderHeader() {
     toggle.addEventListener('click', ev => { ev.stopPropagation(); menu.classList.toggle('open'); });
     document.addEventListener('click', () => menu.classList.remove('open'));
   }
+
+  host.querySelectorAll('[data-palette]').forEach(b => b.addEventListener('click', openPalette));
 
   host.querySelectorAll('[data-signout]').forEach(a => a.addEventListener('click', async ev => {
     ev.preventDefault();
@@ -140,7 +146,7 @@ function renderFooter() {
           <span class="foot-legal">
             <a href="terms.html">Terms</a>
             <a href="privacy.html">Privacy</a>
-            <span>Satirical parody &middot; All ranked figures are fictional</span>
+            <span>Satirical parody &middot; Every grade on this board is invented</span>
           </span>
         </div>
       </div>
@@ -315,7 +321,8 @@ function boardRow(f, opts) {
   who.className = 'who';
   who.appendChild(avatar(f, 'av-sm'));
   const nm = document.createElement('div');
-  nm.innerHTML = `<div class="nm">${f.name}</div><div class="mt">${f.handle}<span class="who-region"> · ${f.region}</span></div>`;
+  nm.innerHTML = `<div class="nm">${f.name}${f.nickname ? ` <em class="nick">&ldquo;${f.nickname}&rdquo;</em>` : ''}</div>`
+    + `<div class="mt">${f.handle}<span class="who-region"> · ${f.region}</span></div>`;
   who.appendChild(nm);
 
   const sc = document.createElement('div');
@@ -352,6 +359,147 @@ function planCardMarkup(p) {
           ? `<a class="btn ${p.featured ? 'btn-gold' : ''} btn-block" href="checkout.html?plan=${p.id}">Choose ${p.name}</a>`
           : '<a class="btn btn-block" href="rankings.html">Browse the board</a>'}
     </div>`;
+}
+
+/* ---------- command palette (Ctrl/Cmd + K) ---------- */
+const PAGE_TARGETS = [
+  { label: 'The full board', href: 'rankings.html', kind: 'Page' },
+  { label: 'Head to head', href: 'compare.html', kind: 'Page' },
+  { label: 'The Fraud Test', href: 'test.html', kind: 'Page' },
+  { label: 'Looksmax desk', href: 'looksmax.html', kind: 'Page' },
+  { label: 'Cycle reports', href: 'news.html', kind: 'Page' },
+  { label: 'Methodology — the ten qualities', href: 'about.html#qualities', kind: 'Page' },
+  { label: 'Membership', href: 'membership.html', kind: 'Page' },
+  { label: 'Submit a Fraud', href: 'submit.html', kind: 'Page' },
+  { label: 'Your dashboard', href: 'account.html', kind: 'Page' },
+  { label: 'Contact the panel', href: 'contact.html', kind: 'Page' }
+];
+
+function paletteResults(query) {
+  const q = query.trim().toLowerCase();
+  const field = rankedField();
+
+  const frauds = field
+    .filter(f => !q || f.name.toLowerCase().includes(q) || (f.nickname || '').toLowerCase().includes(q) ||
+                 f.handle.toLowerCase().includes(q) || f.region.toLowerCase().includes(q))
+    .slice(0, q ? 6 : 3)
+    .map(f => ({ kind: '#' + f.rank, label: f.name + (f.nickname ? ' “' + f.nickname + '”' : ''),
+                 meta: fmt(f.score) + ' · ' + f.tier.label, href: 'profile.html?id=' + f.id }));
+
+  const articles = LOOKSMAX
+    .filter(a => !q || a.title.toLowerCase().includes(q) || a.tags.join(' ').includes(q) || a.category.includes(q))
+    .slice(0, q ? 5 : 2)
+    .map(a => ({ kind: looksmaxCategory(a.category).label, label: a.title,
+                 meta: a.readMinutes + ' min read', href: 'looksmax-article.html?id=' + a.id }));
+
+  const reports = NEWS
+    .filter(n => !q || n.title.toLowerCase().includes(q))
+    .slice(0, q ? 3 : 1)
+    .map(n => ({ kind: 'Cycle ' + n.cycle, label: n.title, meta: n.date, href: 'article.html?id=' + n.id }));
+
+  const pages = PAGE_TARGETS
+    .filter(p => !q || p.label.toLowerCase().includes(q))
+    .slice(0, q ? 4 : 3)
+    .map(p => ({ kind: p.kind, label: p.label, meta: '', href: p.href }));
+
+  return frauds.concat(articles, reports, pages);
+}
+
+function openPalette() {
+  if (document.querySelector('.palette-back')) return;
+
+  const back = document.createElement('div');
+  back.className = 'palette-back';
+  back.innerHTML = `
+    <div class="palette" role="dialog" aria-modal="true" aria-label="Search">
+      <input class="palette-input" type="search" placeholder="Search Frauds, protocol, reports, pages…" aria-label="Search the verse">
+      <div class="palette-list"></div>
+      <div class="palette-foot"><kbd>&uarr;</kbd><kbd>&darr;</kbd> to move · <kbd>&crarr;</kbd> to open · <kbd>esc</kbd> to close</div>
+    </div>`;
+  document.body.appendChild(back);
+  requestAnimationFrame(() => back.classList.add('in'));
+
+  const input = back.querySelector('.palette-input');
+  const list = back.querySelector('.palette-list');
+  let items = [], active = 0;
+
+  function draw() {
+    items = paletteResults(input.value);
+    list.innerHTML = items.length
+      ? items.map((r, i) => `
+          <a class="palette-row${i === active ? ' on' : ''}" href="${r.href}" data-i="${i}">
+            <span class="pr-kind">${r.kind}</span>
+            <span class="pr-label">${r.label}</span>
+            <span class="pr-meta">${r.meta}</span>
+          </a>`).join('')
+      : '<div class="palette-empty">Nothing in the verse matches that.</div>';
+  }
+
+  function move(step) {
+    if (!items.length) return;
+    active = (active + step + items.length) % items.length;
+    draw();
+    const el = list.querySelector('.palette-row.on');
+    if (el) el.scrollIntoView({ block: 'nearest' });
+  }
+
+  const close = () => { back.classList.remove('in'); setTimeout(() => back.remove(), 180); document.removeEventListener('keydown', keys); };
+
+  function keys(ev) {
+    if (ev.key === 'Escape') { ev.preventDefault(); close(); }
+    else if (ev.key === 'ArrowDown') { ev.preventDefault(); move(1); }
+    else if (ev.key === 'ArrowUp') { ev.preventDefault(); move(-1); }
+    else if (ev.key === 'Enter' && items[active]) { ev.preventDefault(); location.href = items[active].href; }
+  }
+
+  input.addEventListener('input', () => { active = 0; draw(); });
+  document.addEventListener('keydown', keys);
+  back.addEventListener('click', ev => { if (ev.target === back) close(); });
+
+  draw();
+  input.focus();
+}
+
+document.addEventListener('keydown', ev => {
+  if ((ev.metaKey || ev.ctrlKey) && ev.key.toLowerCase() === 'k') { ev.preventDefault(); openPalette(); }
+  if (ev.key === '/' && !/input|textarea|select/i.test((document.activeElement || {}).tagName || '')) {
+    ev.preventDefault(); openPalette();
+  }
+});
+
+/* ---------- save-an-article button ---------- */
+function bookmarkButton(article, withLabel) {
+  const b = document.createElement('button');
+  b.type = 'button';
+  const paint = () => {
+    const on = Store.isSaved(article.id);
+    b.className = 'watch' + (on ? ' on' : '') + (withLabel ? ' watch-lg' : '');
+    b.title = on ? 'Remove from saved' : 'Save for later';
+    b.setAttribute('aria-pressed', String(on));
+    b.innerHTML = (on ? '&#10003;' : '&#43;') + (withLabel ? ' <span>' + (on ? 'Saved' : 'Save for later') + '</span>' : '');
+  };
+  paint();
+  b.addEventListener('click', async ev => {
+    ev.preventDefault();
+    ev.stopPropagation();
+    if (!Store.isSignedIn()) return promptSignIn();
+    b.disabled = true;
+    try {
+      const saved = await Store.toggleBookmark(article.id);
+      paint();
+      toast(saved ? 'Saved to your reading list.' : 'Removed from your reading list.');
+    } catch (err) { apiFail(err); } finally { b.disabled = false; }
+  });
+  return b;
+}
+
+/* ---------- relative time ---------- */
+function timeAgo(iso) {
+  const secs = Math.max(1, Math.round((Date.now() - new Date(iso).getTime()) / 1000));
+  if (secs < 60) return secs + 's ago';
+  if (secs < 3600) return Math.round(secs / 60) + 'm ago';
+  if (secs < 86400) return Math.round(secs / 3600) + 'h ago';
+  return Math.round(secs / 86400) + 'd ago';
 }
 
 /* ---------- forms ---------- */

@@ -53,7 +53,7 @@ function planLevel(state, id) { return planById(state, id).level; }
 
 function fraudRows(db) {
   return db.prepare('SELECT * FROM frauds').all().map(r => ({
-    id: r.id, name: r.name, handle: r.handle, region: r.region, age: r.age,
+    id: r.id, name: r.name, nickname: r.nickname || '', handle: r.handle, region: r.region, age: r.age,
     joined: r.joined, movement: r.movement, peak: r.peak, weeks: r.weeks,
     tagline: r.tagline, bio: r.bio, stats: JSON.parse(r.stats),
     baseline: { rise: r.baseline_rise, over: r.baseline_over }
@@ -69,10 +69,20 @@ function liveVotes(db) {
   return out;
 }
 
-/* The ranked field: aggregate grade, rank, tier and live sentiment. */
+/* What members graded each Fraud, alongside what the panel scored. */
+function communityGrades(db) {
+  const out = {};
+  for (const r of db.prepare('SELECT fraud_id, AVG(score) avg, COUNT(*) n FROM ratings GROUP BY fraud_id').all()) {
+    out[r.fraud_id] = { average: Number(r.avg.toFixed(1)), count: r.n };
+  }
+  return out;
+}
+
+/* The ranked field: aggregate grade, rank, tier, live sentiment and member grades. */
 function rankedField(state) {
   const { db, data } = state;
   const votes = liveVotes(db);
+  const grades = communityGrades(db);
 
   return fraudRows(db)
     .map(f => {
@@ -85,6 +95,7 @@ function rankedField(state) {
         ...f,
         score: Number(score.toFixed(4)),
         tier: dataset.tierOf(score),
+        community: grades[f.id] || { average: null, count: 0 },
         sentiment: {
           rise: Math.round(rise / total * 100),
           over: 100 - Math.round(rise / total * 100),
@@ -111,15 +122,50 @@ function memberState(state, user) {
   const appeals = db.prepare('SELECT id, fraud_id AS fraudId, quality, note, cycle, status FROM appeals WHERE user_id = ? ORDER BY created_at DESC').all(user.id);
   const orders = db.prepare('SELECT id, plan, billing, amount_cents AS amountCents, card_brand AS cardBrand, card_last4 AS cardLast4, created_at AS createdAt FROM orders WHERE user_id = ? ORDER BY created_at DESC').all(user.id);
 
+  const bookmarks = db.prepare('SELECT article_id FROM bookmarks WHERE user_id = ? ORDER BY created_at DESC').all(user.id).map(r => r.article_id);
+  const ratings = {};
+  for (const r of db.prepare('SELECT fraud_id, score FROM ratings WHERE user_id = ?').all(user.id)) ratings[r.fraud_id] = r.score;
+  const tests = db.prepare('SELECT id, stats, score, tier, would_rank AS wouldRank, created_at AS createdAt FROM self_tests WHERE user_id = ? ORDER BY created_at DESC LIMIT 10')
+    .all(user.id).map(t => ({ ...t, stats: JSON.parse(t.stats) }));
+
   return {
     user: publicUser(state, user),
     watchlist,
     votes,
+    bookmarks,
+    ratings,
+    tests,
+    routine: routineSummary(db, user.id),
     nominations: nominations.map(n => ({ ...n })),
     appeals: appeals.map(a => ({ ...a })),
     orders: orders.map(o => ({ ...o })),
     nominationsThisCycle: nominations.filter(n => n.cycle === CURRENT_CYCLE).length
   };
+}
+
+/* ---------- routine tracker ---------- */
+const today = () => new Date().toISOString().slice(0, 10);
+const dayBefore = (iso, n) => new Date(new Date(iso + 'T00:00:00Z').getTime() - n * 864e5).toISOString().slice(0, 10);
+
+function routineSummary(db, userId) {
+  const rows = db.prepare('SELECT day, habits FROM routine_days WHERE user_id = ? ORDER BY day DESC LIMIT 60').all(userId);
+  const byDay = {};
+  for (const r of rows) byDay[r.day] = JSON.parse(r.habits);
+
+  /* a day counts toward the streak once at least three habits are ticked */
+  const counts = d => (byDay[d] || []).length;
+  let streak = 0;
+  let cursor = today();
+  if (counts(cursor) < 3) cursor = dayBefore(cursor, 1);       /* today still has time to count */
+  while (counts(cursor) >= 3) { streak++; cursor = dayBefore(cursor, 1); }
+
+  const last14 = [];
+  for (let i = 13; i >= 0; i--) {
+    const d = dayBefore(today(), i);
+    last14.push({ day: d, done: counts(d) });
+  }
+
+  return { today: byDay[today()] || [], streak, last14, days: rows.length };
 }
 
 /* ---------- rate limiting ---------- */
@@ -170,6 +216,9 @@ route('GET', /^\/api\/bootstrap$/, (req, res, state) => {
     categories: state.data.CATEGORIES,
     plans: state.data.PLANS,
     news: state.data.NEWS,
+    looksmax: state.data.LOOKSMAX,
+    looksmaxCategories: state.data.LOOKSMAX_CATEGORIES,
+    habits: state.data.HABITS,
     frauds: field,
     regions: [...new Set(field.map(f => f.region.split(', ').pop()))].sort()
   };
@@ -420,6 +469,163 @@ route('POST', /^\/api\/appeals$/, (req, res, state) => {
 
   return { appeal: { id: row.id, fraudId, fraudName: fraud.name, quality, cycle: row.cycle, status: row.status }, priority };
 }, { auth: true });
+
+/* ---- looksmaxxing desk ---- */
+route('GET', /^\/api\/looksmax$/, (req, res, state) => {
+  const q = (req.query.get('q') || '').trim().toLowerCase();
+  const category = req.query.get('category');
+  const tag = req.query.get('tag');
+  let items = state.data.LOOKSMAX.slice();
+
+  if (category && category !== 'all') items = items.filter(a => a.category === category);
+  if (tag) items = items.filter(a => a.tags.indexOf(tag) > -1);
+  if (q) items = items.filter(a =>
+    a.title.toLowerCase().includes(q) || a.lede.toLowerCase().includes(q) ||
+    a.tags.join(' ').toLowerCase().includes(q) || a.body.join(' ').toLowerCase().includes(q));
+
+  if (req.query.get('saved') === '1') {
+    if (!state.user) throw unauthorized('Sign in to see your saved articles.');
+    const saved = new Set(state.db.prepare('SELECT article_id FROM bookmarks WHERE user_id = ?').all(state.user.id).map(r => r.article_id));
+    items = items.filter(a => saved.has(a.id));
+  }
+
+  const sort = req.query.get('sort');
+  if (sort === 'quick') items.sort((a, b) => a.readMinutes - b.readMinutes);
+
+  return {
+    total: items.length,
+    categories: state.data.LOOKSMAX_CATEGORIES,
+    articles: items
+  };
+});
+
+route('GET', /^\/api\/looksmax\/([\w-]+)$/, (req, res, state, params) => {
+  const i = state.data.LOOKSMAX.findIndex(a => a.id === params[0]);
+  if (i < 0) throw notFound('No such article.');
+  const article = state.data.LOOKSMAX[i];
+  const related = state.data.LOOKSMAX
+    .filter(a => a.id !== article.id && (a.category === article.category || a.tags.some(t => article.tags.includes(t))))
+    .slice(0, 3);
+  return { article, related, next: state.data.LOOKSMAX[i - 1] || null, prev: state.data.LOOKSMAX[i + 1] || null };
+});
+
+route('PUT', /^\/api\/bookmarks\/([\w-]+)$/, (req, res, state, params) => {
+  if (!state.data.LOOKSMAX.some(a => a.id === params[0])) throw notFound('No such article.');
+  state.db.prepare('INSERT OR IGNORE INTO bookmarks (user_id, article_id, created_at) VALUES (?,?,?)')
+    .run(state.user.id, params[0], new Date().toISOString());
+  return { saved: true, bookmarks: currentBookmarks(state) };
+}, { auth: true });
+
+route('DELETE', /^\/api\/bookmarks\/([\w-]+)$/, (req, res, state, params) => {
+  state.db.prepare('DELETE FROM bookmarks WHERE user_id = ? AND article_id = ?').run(state.user.id, params[0]);
+  return { saved: false, bookmarks: currentBookmarks(state) };
+}, { auth: true });
+
+function currentBookmarks(state) {
+  return state.db.prepare('SELECT article_id FROM bookmarks WHERE user_id = ? ORDER BY created_at DESC').all(state.user.id).map(r => r.article_id);
+}
+
+/* ---- daily routine ---- */
+route('GET', /^\/api\/routine$/, (req, res, state) => routineSummary(state.db, state.user.id), { auth: true });
+
+route('POST', /^\/api\/routine$/, (req, res, state) => {
+  const keys = Array.isArray(req.body.habits) ? req.body.habits : [];
+  const valid = state.data.HABITS.map(h => h.key);
+  const habits = [...new Set(keys.filter(k => valid.includes(k)))];
+
+  const day = /^\d{4}-\d{2}-\d{2}$/.test(req.body.day || '') ? req.body.day : today();
+  if (day > today()) throw bad('You cannot tick a day that has not happened.', 'day');
+
+  state.db.prepare(`INSERT INTO routine_days (user_id, day, habits, updated_at) VALUES (?,?,?,?)
+                    ON CONFLICT(user_id, day) DO UPDATE SET habits = excluded.habits, updated_at = excluded.updated_at`)
+    .run(state.user.id, day, JSON.stringify(habits), new Date().toISOString());
+
+  return routineSummary(state.db, state.user.id);
+}, { auth: true });
+
+/* ---- member grades ---- */
+route('POST', /^\/api\/ratings$/, (req, res, state) => {
+  const fraudId = str(req.body.fraudId, { field: 'fraudId', min: 1, max: 40, label: 'Fraud' });
+  if (!state.db.prepare('SELECT 1 FROM frauds WHERE id = ?').get(fraudId)) throw notFound('No ranked Fraud with that id.');
+
+  const score = Math.round(Number(req.body.score));
+  if (!Number.isFinite(score) || score < 0 || score > 100) throw bad('A grade is between 0 and 100.', 'score');
+
+  state.db.prepare(`INSERT INTO ratings (user_id, fraud_id, score, created_at) VALUES (?,?,?,?)
+                    ON CONFLICT(user_id, fraud_id) DO UPDATE SET score = excluded.score, created_at = excluded.created_at`)
+    .run(state.user.id, fraudId, score, new Date().toISOString());
+
+  const fraud = rankedField(state).find(f => f.id === fraudId);
+  return { score, community: fraud.community, panel: fraud.score };
+}, { auth: true });
+
+/* ---- the Fraud Test ---- */
+route('POST', /^\/api\/self-test$/, (req, res, state) => {
+  const stats = {};
+  for (const c of state.data.CATEGORIES) {
+    const v = Math.round(Number((req.body.stats || {})[c.key]));
+    if (!Number.isFinite(v) || v < 0 || v > 100) throw bad('Grade every quality between 0 and 100.', c.key);
+    stats[c.key] = v;
+  }
+
+  const score = dataset.overall({ stats }, state.data.CATEGORIES);
+  const tier = dataset.tierOf(score);
+  const field = rankedField(state);
+  const wouldRank = field.filter(f => f.score > score).length + 1;
+
+  const sorted = state.data.CATEGORIES.slice().sort((a, b) => stats[a.key] - stats[b.key]);
+  const weakest = sorted[0];
+  const strongest = sorted[sorted.length - 1];
+  const advice = state.data.LOOKSMAX.find(a => a.tags.includes(weakest.key) || a.category === weakest.key)
+    || state.data.LOOKSMAX.find(a => a.category === 'frame');
+
+  const row = {
+    id: auth.id('tst'), user_id: state.user ? state.user.id : null,
+    stats: JSON.stringify(stats), score: Number(score.toFixed(2)), tier: tier.label,
+    would_rank: wouldRank, created_at: new Date().toISOString()
+  };
+  state.db.prepare('INSERT INTO self_tests (id, user_id, stats, score, tier, would_rank, created_at) VALUES (?,?,?,?,?,?,?)')
+    .run(row.id, row.user_id, row.stats, row.score, row.tier, row.would_rank, row.created_at);
+
+  return {
+    id: row.id,
+    score: Number(score.toFixed(1)),
+    tier: tier,
+    wouldRank,
+    fieldSize: field.length,
+    beats: field.filter(f => f.score < score).length,
+    weakest: { key: weakest.key, label: weakest.label, value: stats[weakest.key] },
+    strongest: { key: strongest.key, label: strongest.label, value: stats[strongest.key] },
+    reading: advice ? { id: advice.id, title: advice.title, verdict: advice.verdict } : null,
+    saved: !!state.user
+  };
+});
+
+/* ---- what the verse is doing ---- */
+route('GET', /^\/api\/activity$/, (req, res, state) => {
+  const limit = Math.min(Math.max(parseInt(req.query.get('limit') || '12', 10) || 12, 1), 50);
+  const rows = state.db.prepare(`
+    SELECT * FROM (
+      SELECT 'vote' AS kind, v.created_at AS at, u.name AS who, f.name AS subject, v.kind AS detail
+        FROM votes v JOIN users u ON u.id = v.user_id JOIN frauds f ON f.id = v.fraud_id
+      UNION ALL
+      SELECT 'rating', r.created_at, u.name, f.name, CAST(r.score AS TEXT)
+        FROM ratings r JOIN users u ON u.id = r.user_id JOIN frauds f ON f.id = r.fraud_id
+      UNION ALL
+      SELECT 'nomination', n.created_at, u.name, n.name, n.quality
+        FROM nominations n JOIN users u ON u.id = n.user_id
+      UNION ALL
+      SELECT 'test', t.created_at, u.name, '', CAST(ROUND(t.score, 1) AS TEXT)
+        FROM self_tests t JOIN users u ON u.id = t.user_id
+      UNION ALL
+      SELECT 'membership', o.created_at, u.name, o.plan, o.billing
+        FROM orders o JOIN users u ON u.id = o.user_id
+    ) ORDER BY at DESC LIMIT ?
+  `).all(limit);
+
+  /* first names only — the feed is public */
+  return { events: rows.map(r => ({ kind: r.kind, at: r.at, who: String(r.who).split(' ')[0], subject: r.subject, detail: r.detail })) };
+});
 
 /* ---- membership ---- */
 route('POST', /^\/api\/checkout$/, (req, res, state) => {

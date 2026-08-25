@@ -9,7 +9,8 @@ persistence and plan enforcement.
 No build step and no npm dependencies on either side: plain HTML, CSS and vanilla JavaScript in the
 browser, Node's own modules and `node:sqlite` on the server.
 
-Every ranked figure, grade and quote on this site is fictional.
+Every grade, panel note and quote on this site is invented for entertainment. The top three are real
+people who are in on the joke; the rest of the board is fictional.
 
 ```bash
 npm start        # http://127.0.0.1:8080 — site and API on one origin
@@ -24,6 +25,9 @@ npm start        # http://127.0.0.1:8080 — site and API on one origin
 | `profile.html?id=f006` | One Fraud — ten grade bars against the board average, 12-cycle rank history chart, record, voting, nearby ranks |
 | `compare.html?a=f001&b=f003` | Head to head — quality-by-quality split bars, per-quality winners, panel verdict, swap and shuffle |
 | `news.html` / `article.html?id=c41` | Cycle reports index and article, with the board's top five alongside and prev/next |
+| `looksmax.html` | The looksmaxxing desk — category chips, search, saved-only, quickest-read sort, and the daily routine tracker |
+| `looksmax-article.html?id=lm01` | One protocol: the piece, the checklist, the verdict, which graded quality it feeds, related reading |
+| `test.html` | The Fraud Test — ten sliders, a live aggregate, and where that aggregate would enter the board |
 | `membership.html` | Three tiers, a full feature comparison table, membership FAQ |
 | `checkout.html?plan=verified` | Monthly/yearly summary, validated card form, order confirmation |
 | `login.html` / `signup.html` | Sign in and create account, with redirect-through for gated destinations |
@@ -33,6 +37,27 @@ npm start        # http://127.0.0.1:8080 — site and API on one origin
 | `contact.html` | Grade appeals (wired to the store) and a general enquiry form |
 | `terms.html` / `privacy.html` | What the site is, and what it stores |
 | `404.html` | Unranked |
+
+## The interactive bits
+
+- **Looksmax desk** (`looksmax.html`) — a vertical separate from the cycle reports: ten pieces across
+  nine categories (jaw and mewing, skin, hair, frame, sleep, diet, style, posture, angles), each with
+  a protocol checklist, a one-line verdict, and the graded quality it feeds. Filter by category,
+  search the full text, sort by quickest read, and save pieces to a reading list on your account.
+- **Daily routine tracker** — seven habits from the desk's protocol, ticked per day, with a streak
+  (three habits makes a day count) and a fourteen-day strip. Saved server-side and shown on the
+  dashboard.
+- **The Fraud Test** (`test.html`) — grade yourself on the same ten qualities. Live aggregate and
+  tier as you drag, then a verdict: which rank you would enter at, how many ranked Frauds you beat,
+  your strongest and weakest lane with the aggregate points it costs, the Fraud directly above and
+  below you, and a prescribed article for the weak lane. Results save to your account and every run
+  has a share link that carries the grades in the URL.
+- **Member grades** — on any profile, members grade the whole man on one slider; the average is
+  published next to the panel's aggregate with the gap called out.
+- **The wire** — a live activity feed on the home page: votes, grades, nominations, test scores and
+  memberships as they happen, first names only.
+- **Command palette** — `Ctrl/⌘ K` (or `/`) anywhere, searching Frauds by name, nickname, handle and
+  region, plus looksmax protocol, cycle reports and pages, with arrow-key navigation.
 
 ## Backend
 
@@ -60,6 +85,13 @@ server/data/        the SQLite database (created on first run, gitignored)
 | `GET` `PATCH` `DELETE` | `/api/auth/me` | current member state, edit details, delete the account |
 | `PUT` `DELETE` | `/api/watchlist/:id` | watch or unwatch, cap enforced |
 | `POST` | `/api/votes` | rising / overrated, toggling, returns the fresh tally |
+| `POST` | `/api/ratings` | a member's own grade for a Fraud, returns the community average |
+| `GET` | `/api/looksmax` | the desk — `q`, `category`, `tag`, `saved`, `sort` |
+| `GET` | `/api/looksmax/:id` | one piece plus related, prev and next |
+| `PUT` `DELETE` | `/api/bookmarks/:id` | save or unsave an article |
+| `GET` `POST` | `/api/routine` | today's habits and the streak |
+| `POST` | `/api/self-test` | grade a set of ten qualities, returns rank, lanes and prescribed reading |
+| `GET` | `/api/activity` | the wire — recent votes, grades, nominations, tests and memberships |
 | `GET` `POST` | `/api/nominations` | nominate, gated by plan and one per cycle |
 | `GET` `POST` | `/api/appeals` | file a grade appeal |
 | `POST` | `/api/checkout` | validate a card, record an order, set the plan |
@@ -74,6 +106,8 @@ The frontend shows these; the backend is what actually applies them.
 
 - **Auth** — votes, watchlists, nominations, appeals and checkout all require a session.
 - **Watchlist cap** — five for Spectator, unlimited from Verified up.
+- **Grades and routines** — one grade per member per Fraud, one routine row per member per day, and
+  no ticking a day that has not happened yet.
 - **Nominations** — Verified or better, one per member per cycle, no name already on the board,
   a real quality, and at least forty characters of case.
 - **Appeals** — must name one of the ten graded qualities; Panel Access members get one priority
@@ -117,7 +151,8 @@ detects it.
 
 ```
 assets/css/styles.css   all styling — dark board aesthetic, responsive from 320px up
-assets/js/data.js       dataset: 24 ranked Frauds, the ten qualities, plans, cycle reports
+assets/js/data.js       dataset: 24 ranked Frauds, the ten qualities, plans, cycle reports,
+                        the looksmax desk and the routine habits
 assets/js/core.js       scoring, tiers, ranked field, rank history, sentiment, formatting
 assets/js/api.js        fetch client for the JSON API
 assets/js/store.js      member state — server-backed, with the localStorage fallback
@@ -134,6 +169,8 @@ assets/js/account.js    member dashboard
 assets/js/submit.js     nomination flow and its gates
 assets/js/contact.js    grade appeals
 assets/js/about.js      the ten-qualities table
+assets/js/looksmax.js   the desk feed, the routine tracker and article pages
+assets/js/test.js       the Fraud Test
 ```
 
 Page scripts register with `App.ready()`, which runs once the dataset and session have loaded, so
@@ -164,4 +201,6 @@ Add or edit entries in `assets/js/data.js`. It is the single source for both sid
 loads it directly in static mode, and the server evaluates the same file to seed SQLite, refreshing
 the `frauds` table on every boot (member data is never touched). Ranks, tiers, headline numbers, the
 ticker, podium, movers, region filters and comparison options are all derived at runtime — nothing
-needs renumbering by hand. `PLANS` and `NEWS` in the same file drive membership and cycle reports.
+needs renumbering by hand. `PLANS` and `NEWS` drive membership and cycle reports; `LOOKSMAX`,
+`LOOKSMAX_CATEGORIES` and `HABITS` drive the looksmax desk and the routine tracker. A `nickname` on a
+Fraud is rendered everywhere the board shows their name.

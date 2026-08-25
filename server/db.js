@@ -44,6 +44,7 @@ function migrate(db) {
     CREATE TABLE IF NOT EXISTS frauds (
       id             TEXT PRIMARY KEY,
       name           TEXT NOT NULL,
+      nickname       TEXT NOT NULL DEFAULT '',
       handle         TEXT NOT NULL,
       region         TEXT NOT NULL,
       age            INTEGER NOT NULL,
@@ -112,7 +113,50 @@ function migrate(db) {
       created_at   TEXT NOT NULL
     );
     CREATE INDEX IF NOT EXISTS idx_orders_user ON orders(user_id);
+
+    /* member grades: what the verse thinks, next to what the panel scored */
+    CREATE TABLE IF NOT EXISTS ratings (
+      user_id    TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      fraud_id   TEXT NOT NULL REFERENCES frauds(id) ON DELETE CASCADE,
+      score      INTEGER NOT NULL CHECK (score BETWEEN 0 AND 100),
+      created_at TEXT NOT NULL,
+      PRIMARY KEY (user_id, fraud_id)
+    );
+    CREATE INDEX IF NOT EXISTS idx_ratings_fraud ON ratings(fraud_id);
+
+    /* saved looksmaxxing articles */
+    CREATE TABLE IF NOT EXISTS bookmarks (
+      user_id    TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      article_id TEXT NOT NULL,
+      created_at TEXT NOT NULL,
+      PRIMARY KEY (user_id, article_id)
+    );
+
+    /* one row per member per day of the routine tracker */
+    CREATE TABLE IF NOT EXISTS routine_days (
+      user_id    TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      day        TEXT NOT NULL,
+      habits     TEXT NOT NULL DEFAULT '[]',
+      updated_at TEXT NOT NULL,
+      PRIMARY KEY (user_id, day)
+    );
+
+    /* self-assessments from the Fraud Test */
+    CREATE TABLE IF NOT EXISTS self_tests (
+      id          TEXT PRIMARY KEY,
+      user_id     TEXT REFERENCES users(id) ON DELETE CASCADE,
+      stats       TEXT NOT NULL,
+      score       REAL NOT NULL,
+      tier        TEXT NOT NULL,
+      would_rank  INTEGER NOT NULL,
+      created_at  TEXT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_tests_user ON self_tests(user_id, created_at);
   `);
+
+  /* nickname arrived after the first release */
+  const cols = db.prepare('PRAGMA table_info(frauds)').all().map(c => c.name);
+  if (!cols.includes('nickname')) db.exec("ALTER TABLE frauds ADD COLUMN nickname TEXT NOT NULL DEFAULT ''");
 }
 
 /* Frauds are reference data: refreshed from the dataset on every boot so
@@ -121,10 +165,10 @@ function migrate(db) {
 function seed(db) {
   const { FRAUDS, CATEGORIES } = dataset.load();
   const up = db.prepare(`
-    INSERT INTO frauds (id, name, handle, region, age, joined, movement, peak, weeks, tagline, bio, stats, baseline_rise, baseline_over)
-    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+    INSERT INTO frauds (id, name, nickname, handle, region, age, joined, movement, peak, weeks, tagline, bio, stats, baseline_rise, baseline_over)
+    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
     ON CONFLICT(id) DO UPDATE SET
-      name=excluded.name, handle=excluded.handle, region=excluded.region, age=excluded.age,
+      name=excluded.name, nickname=excluded.nickname, handle=excluded.handle, region=excluded.region, age=excluded.age,
       joined=excluded.joined, movement=excluded.movement, peak=excluded.peak, weeks=excluded.weeks,
       tagline=excluded.tagline, bio=excluded.bio, stats=excluded.stats,
       baseline_rise=excluded.baseline_rise, baseline_over=excluded.baseline_over
@@ -132,7 +176,7 @@ function seed(db) {
 
   for (const f of FRAUDS) {
     const base = dataset.baselineSentiment(f, CATEGORIES);
-    up.run(f.id, f.name, f.handle, f.region, f.age, f.joined, f.movement, f.peak, f.weeks,
+    up.run(f.id, f.name, f.nickname || '', f.handle, f.region, f.age, f.joined, f.movement, f.peak, f.weeks,
            f.tagline, f.bio, JSON.stringify(f.stats), base.rise, base.over);
   }
 }

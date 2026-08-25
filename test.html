@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%2307080b'/><text x='16' y='23' font-size='20' font-family='Arial' font-weight='bold' text-anchor='middle' fill='%23d9b25c'>F</text></svg>">
+<title>The Fraud Test | Official Fraud Rankings</title>
+<meta name="description" content="Grade yourself on the same ten evenly weighted qualities and see where you would enter the board.">
+</head>
+<body>
+<div id="site-header"></div>
+<main>
+<section class="page-head">
+  <div class="wrap">
+    <div class="eyebrow">The Fraud Test</div>
+    <h1>Grade <em>Yourself</em></h1>
+    <p>Ten qualities, ten percent each, exactly as the panel scores the board. Move the sliders honestly and find out where your aggregate would enter.</p>
+  </div>
+</section>
+
+<section class="section" id="test" style="padding-top:26px">
+  <div class="wrap">
+    <div class="test-layout">
+      <div class="card">
+        <div class="num-tag">Your grades</div>
+        <h3>Be honest, the panel is</h3>
+        <div class="sliders" id="sliders" style="margin-top:18px"></div>
+        <div class="profile-actions" style="margin-top:22px">
+          <button class="btn btn-gold" type="button" id="grade-me">Grade me</button>
+          <button class="btn btn-sm" type="button" id="randomise">Randomise</button>
+          <button class="btn btn-sm" type="button" id="honest">Reset to fifty</button>
+        </div>
+      </div>
+
+      <aside style="display:grid;gap:16px;align-content:start">
+        <div class="card live-card" id="live"></div>
+        <div class="card">
+          <div class="num-tag">How it is scored</div>
+          <h3>Flat mean, no favours</h3>
+          <p>The aggregate is the plain average of your ten grades — height counts exactly as much as business acumen. That even split is the whole basis of the board.</p>
+          <a class="btn btn-sm btn-block" style="margin-top:14px" href="about.html#qualities">The ten qualities &rarr;</a>
+        </div>
+      </aside>
+    </div>
+
+    <div class="card result-card" id="result" style="margin-top:16px"></div>
+  </div>
+</section>
+</main>
+<div id="site-footer"></div>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/store.js"></script>
+<script src="assets/js/ui.js"></script>
+<script src="assets/js/test.js"></script>
+</body>
+</html>

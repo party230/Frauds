@@ -49,8 +49,24 @@ function applyDataset(payload) {
   if (payload.frauds) FRAUDS = payload.frauds;
   if (payload.plans) PLANS = payload.plans;
   if (payload.news) NEWS = payload.news;
+  if (payload.looksmax) LOOKSMAX = payload.looksmax;
+  if (payload.looksmaxCategories) LOOKSMAX_CATEGORIES = payload.looksmaxCategories;
+  if (payload.habits) HABITS = payload.habits;
   if (payload.regions) REGIONS = payload.regions;
   if (payload.cycle) CURRENT_CYCLE = payload.cycle;
+}
+
+function articleById(id) {
+  return LOOKSMAX.find(a => a.id === id) || null;
+}
+
+function looksmaxCategory(key) {
+  return LOOKSMAX_CATEGORIES.find(c => c.key === key) || { key: key, label: key };
+}
+
+/* "Parth Mehta" plus the name the verse actually uses. */
+function displayName(fraud) {
+  return fraud.nickname ? fraud.name + ' &ldquo;' + fraud.nickname + '&rdquo;' : fraud.name;
 }
 
 /* Fold a fresh tally from the server back into the cached board. */

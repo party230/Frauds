@@ -18,11 +18,12 @@ function load() {
   vm.createContext(sandbox);
   new vm.Script(code, { filename: 'data.js' }).runInContext(sandbox);
 
-  const { CATEGORIES, FRAUDS, PLANS, NEWS } = sandbox;
-  if (!Array.isArray(CATEGORIES) || !Array.isArray(FRAUDS) || !Array.isArray(PLANS) || !Array.isArray(NEWS)) {
-    throw new Error('assets/js/data.js did not define CATEGORIES, FRAUDS, PLANS and NEWS');
+  const { CATEGORIES, FRAUDS, PLANS, NEWS, LOOKSMAX, LOOKSMAX_CATEGORIES, HABITS } = sandbox;
+  const required = { CATEGORIES, FRAUDS, PLANS, NEWS, LOOKSMAX, LOOKSMAX_CATEGORIES, HABITS };
+  for (const [name, value] of Object.entries(required)) {
+    if (!Array.isArray(value)) throw new Error('assets/js/data.js did not define ' + name);
   }
-  return { CATEGORIES, FRAUDS, PLANS, NEWS };
+  return required;
 }
 
 /* Ten qualities, weighted evenly — the same rule the frontend states. */

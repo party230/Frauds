@@ -56,7 +56,7 @@ App.ready(() => {
     document.getElementById('acct-stats').innerHTML = [
       [watch.length, 'On your watchlist'],
       [Object.keys(votes).length, 'Votes cast'],
-      [Store.nominations().length, 'Nominations filed'],
+      [Store.routine().streak, 'Routine streak'],
       [plan.level >= 1 ? (1 - Store.nominationsThisCycle()) + '/1' : '0/1', 'Nominations left this cycle']
     ].map(([n, l]) => `<div><div class="n">${n}</div><div class="l">${l}</div></div>`).join('');
 
@@ -99,6 +99,40 @@ App.ready(() => {
             <span>Cycle ${n.cycle} · ${n.status}</span>
           </div>`).join('')}</div>`
       : `<div class="empty"><p>No nominations filed yet.</p><a class="btn btn-sm" href="submit.html">Nominate a Fraud</a></div>`;
+
+    /* ----- saved reading ----- */
+    const saved = Store.bookmarks().map(articleById).filter(Boolean);
+    const sh = document.getElementById('saved-articles');
+    if (sh) {
+      sh.innerHTML = saved.length
+        ? `<div class="kv kv-list">${saved.map(a => `
+            <div><span><a href="looksmax-article.html?id=${a.id}">${a.title}</a></span><span>${looksmaxCategory(a.category).label} · ${a.readMinutes} min</span></div>`).join('')}</div>`
+        : '<div class="empty"><p>Nothing saved yet.</p><a class="btn btn-sm" href="looksmax.html">Open the looksmax desk</a></div>';
+    }
+
+    /* ----- routine streak ----- */
+    const rh = document.getElementById('routine-summary');
+    if (rh) {
+      const r = Store.routine();
+      rh.innerHTML = `
+        <div class="streak">
+          <div class="streak-n">${r.streak}</div>
+          <div class="streak-l">day${r.streak === 1 ? '' : 's'} in a row<br><em>${r.today.length} of ${HABITS.length} ticked today</em></div>
+        </div>
+        <div class="strip">${r.last14.map(d => `<span class="strip-day${d.done >= 3 ? ' hit' : d.done ? ' part' : ''}" title="${d.day}: ${d.done} habits"></span>`).join('')}</div>
+        <a class="btn btn-sm btn-block" style="margin-top:16px" href="looksmax.html#routine">Tick today's habits</a>`;
+    }
+
+    /* ----- Fraud Test history ----- */
+    const th = document.getElementById('test-history');
+    if (th) {
+      const tests = Store.tests();
+      th.innerHTML = tests.length
+        ? `<div class="kv kv-list">${tests.slice(0, 6).map(t => `
+            <div><span>${fmt(Number(t.score))} · ${t.tier} <em class="dim">would enter #${t.wouldRank}</em></span><span>${String(t.createdAt).slice(0, 10)}</span></div>`).join('')}</div>`
+          + '<a class="btn btn-sm btn-block" style="margin-top:14px" href="test.html">Take it again</a>'
+        : '<div class="empty"><p>You have not graded yourself yet.</p><a class="btn btn-sm" href="test.html">Take the Fraud Test</a></div>';
+    }
 
     /* ----- orders ----- */
     const orders = Store.orders();

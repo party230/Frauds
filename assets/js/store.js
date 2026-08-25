@@ -17,6 +17,10 @@ const Store = (() => {
     nominations: [],
     appeals: [],
     orders: [],
+    bookmarks: [],
+    ratings: {},
+    tests: [],
+    routine: { today: [], streak: 0, last14: [], days: 0 },
     nominationsThisCycle: 0
   });
 
@@ -212,6 +216,90 @@ const Store = (() => {
       return res;
     },
 
+    /* ---------- saved looksmaxxing articles ---------- */
+    bookmarks: () => state.bookmarks.slice(),
+    isSaved: id => state.bookmarks.indexOf(id) > -1,
+
+    async toggleBookmark(id) {
+      requireUser();
+      const on = state.bookmarks.indexOf(id) > -1;
+      if (offline) {
+        state.bookmarks = on ? state.bookmarks.filter(x => x !== id) : [id].concat(state.bookmarks);
+        writeLocal(); notify();
+        return !on;
+      }
+      const res = on ? await Api.del('/bookmarks/' + id) : await Api.put('/bookmarks/' + id);
+      state.bookmarks = res.bookmarks;
+      notify();
+      return res.saved;
+    },
+
+    /* ---------- member grades ---------- */
+    ratings: () => Object.assign({}, state.ratings),
+    ratingFor: id => (id in state.ratings ? state.ratings[id] : null),
+
+    async rate(fraudId, score) {
+      requireUser();
+      if (offline) {
+        state.ratings[fraudId] = score;
+        writeLocal(); notify();
+        const f = byId(fraudId);
+        return { score, community: { average: score, count: 1 }, panel: f.score };
+      }
+      const res = await Api.post('/ratings', { fraudId, score });
+      state.ratings[fraudId] = res.score;
+      const f = FRAUDS.find(x => x.id === fraudId);
+      if (f) f.community = res.community;
+      notify();
+      return res;
+    },
+
+    /* ---------- daily routine ---------- */
+    routine: () => state.routine,
+
+    async saveRoutine(habitKeys) {
+      requireUser();
+      if (offline) {
+        const day = new Date().toISOString().slice(0, 10);
+        const days = Object.assign({}, state.routineDays || {}, { [day]: habitKeys });
+        state.routineDays = days;
+        state.routine = localRoutineSummary(days);
+        writeLocal(); notify();
+        return state.routine;
+      }
+      state.routine = await Api.post('/routine', { habits: habitKeys });
+      notify();
+      return state.routine;
+    },
+
+    /* ---------- the Fraud Test ---------- */
+    tests: () => state.tests.slice(),
+
+    async runTest(stats) {
+      if (offline) {
+        const res = localTestResult(stats);
+        if (state.user) {
+          state.tests.unshift({ id: 'tst_local_' + Date.now(), stats, score: res.score, tier: res.tier.label,
+                                wouldRank: res.wouldRank, createdAt: new Date().toISOString() });
+          writeLocal(); notify();
+        }
+        return res;
+      }
+      const res = await Api.post('/self-test', { stats });
+      if (state.user) {
+        state.tests.unshift({ id: res.id, stats, score: res.score, tier: res.tier.label,
+                              wouldRank: res.wouldRank, createdAt: new Date().toISOString() });
+        notify();
+      }
+      return res;
+    },
+
+    /* ---------- activity ---------- */
+    async activity(limit) {
+      if (offline) return { events: [] };
+      return Api.get('/activity?limit=' + (limit || 12));
+    },
+
     /* ---------- membership ---------- */
     async checkout(order) {
       requireUser();
@@ -245,6 +333,41 @@ const Store = (() => {
 
   function nameFromEmail(email) {
     return email.split('@')[0].replace(/[._-]+/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+  }
+
+  /* offline equivalents of what the server computes */
+  function localRoutineSummary(days) {
+    const iso = d => d.toISOString().slice(0, 10);
+    const today = iso(new Date());
+    const back = n => iso(new Date(Date.now() - n * 864e5));
+    const count = d => (days[d] || []).length;
+
+    let streak = 0;
+    let i = count(today) >= 3 ? 0 : 1;
+    while (count(back(i)) >= 3) { streak++; i++; }
+
+    const last14 = [];
+    for (let k = 13; k >= 0; k--) last14.push({ day: back(k), done: count(back(k)) });
+    return { today: days[today] || [], streak, last14, days: Object.keys(days).length };
+  }
+
+  function localTestResult(stats) {
+    const score = CATEGORIES.reduce((a, c) => a + stats[c.key], 0) / CATEGORIES.length;
+    const field = rankedField();
+    const sorted = CATEGORIES.slice().sort((a, b) => stats[a.key] - stats[b.key]);
+    const weakest = sorted[0], strongest = sorted[sorted.length - 1];
+    const advice = LOOKSMAX.find(a => a.tags.includes(weakest.key) || a.category === weakest.key) || LOOKSMAX[0];
+    return {
+      score: Number(score.toFixed(1)),
+      tier: tierOf(score),
+      wouldRank: field.filter(f => f.score > score).length + 1,
+      fieldSize: field.length,
+      beats: field.filter(f => f.score < score).length,
+      weakest: { key: weakest.key, label: weakest.label, value: stats[weakest.key] },
+      strongest: { key: strongest.key, label: strongest.label, value: stats[strongest.key] },
+      reading: advice ? { id: advice.id, title: advice.title, verdict: advice.verdict } : null,
+      saved: false
+    };
   }
 
   function nextChargeDate(billing) {
