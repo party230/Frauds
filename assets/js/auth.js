@@ -68,7 +68,7 @@ App.ready(() => {
 
     renderHeader();
     toast(mode === 'signup' ? 'Account created. Welcome to the board.' : 'Signed in.');
-    location.href = plan ? 'checkout.html?plan=' + plan : next;
+    navigate(plan ? 'checkout.html?plan=' + plan : next);
   });
 
   /* carry the redirect through the login/signup switch link */

@@ -13,7 +13,8 @@ Every grade, panel note and quote on this site is invented for entertainment. Th
 people who are in on the joke; the rest of the board is fictional.
 
 ```bash
-npm start        # http://127.0.0.1:8080 — site and API on one origin
+npm start                  # http://127.0.0.1:8080 — site and API on one origin
+node tools/build-bundle.js # dist/fraud-rankings.html — the whole site in one file
 ```
 
 ## Pages
@@ -152,6 +153,13 @@ curl localhost:8080/api/health
 Node 22.5+ is required for `node:sqlite`, which prints an experimental-feature warning on boot —
 that is Node talking about its own API, not a problem with the server. The database lives at
 `server/data/ofr.sqlite`; set `OFR_DB` to move it.
+
+### One-file build
+
+`node tools/build-bundle.js` inlines every stylesheet, script and page body into
+`dist/fraud-rankings.html` — the whole site, routed client-side through `?page=…`, with working
+back/forward. It runs from a file:// path, any static host, or a published artifact, and behaves
+exactly like the static fallback below: bundled dataset, member state in `localStorage`.
 
 ### Without the backend
 

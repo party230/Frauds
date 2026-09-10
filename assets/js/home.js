@@ -59,7 +59,7 @@ App.ready(() => {
   }
 
   /* ----- top ten preview ----- */
-  const board = document.getElementById('board');
+  const board = document.getElementById('home-board');
   if (board) field.slice(0, 10).forEach(f => board.appendChild(boardRow(f)));
 
   /* ----- latest cycle reports ----- */

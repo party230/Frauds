@@ -181,7 +181,7 @@ App.ready(() => {
   document.getElementById('sign-out').addEventListener('click', async () => {
     await Store.signOut();
     toast('Signed out.');
-    location.href = 'index.html';
+    navigate('index.html');
   });
 
   document.getElementById('reset-data').addEventListener('click', () => {
@@ -192,7 +192,7 @@ App.ready(() => {
       .el.querySelector('#confirm-reset').addEventListener('click', async () => {
         try {
           await Store.deleteAccount();
-          location.href = 'index.html';
+          navigate('index.html');
         } catch (err) {
           apiFail(err, 'The account could not be deleted.');
         }

@@ -18,85 +18,46 @@ var CATEGORIES = [
 
 var FRAUDS = [
   {
-    id: 'f001', name: 'Parth Mehta', nickname: 'Party', handle: '@party', region: 'Mumbai, IN', age: 27,
+    id: 'f001', name: 'Adhiparth Mehta Sharma', nickname: 'Adhiparty', handle: '@adhiparty',
+    region: 'Mumbai \u00b7 Delhi, IN', age: 26,
     joined: 'Jan 2024', movement: 0, peak: 1, weeks: 41,
-    tagline: 'Still #1 — by a hundredth of a point, for the first time in eleven cycles.',
-    bio: 'The measuring stick of the Fraud Verse. Party entered the rankings at #14 and climbed to the summit in under four months, largely on the back of a transformation arc the panel graded as generational. Runs a supplement label, two gyms and a media arm, and has never once posted a negative cycle at the top. Cycle 41 is the first in which the summit has been genuinely contested.',
-    stats: { height: 97, frame: 98, transformation: 96, aesthetics: 95, grooming: 94, drip: 92, business: 96, social: 98, personality: 95, longevity: 97 },
+    tagline: 'The merger. Two profiles, one entry, and the widest lead the board has ever carried.',
+    bio: 'For eleven cycles the summit was a two-man argument decided by a hundredth of a point. In cycle 41 the panel stopped arguing and merged the entries: Adhiparth Mehta Sharma is what Parth Mehta and Adhiraj Sharma amount to when neither has to concede a lane. He takes the room from one half and the face from the other \u2014 a 98 on social resonance beside a 98 on facial aesthetics, which no single profile in the history of the board has held at once. The result grades 96.80, the highest aggregate ever recorded, and leads second place by more than four points.',
+    stats: { height: 97, frame: 98, transformation: 96, aesthetics: 98, grooming: 97, drip: 96, business: 96, social: 98, personality: 95, longevity: 97 },
     profile: {
-      status: 'Reigning · eleven consecutive cycles at #1',
-      quote: 'The board is a mirror with a scoreboard attached. Most people are frightened of the mirror. I check it twice a day.',
-      signature: 'Cold-weather tailoring, a jaw shadow that survives overhead light, and a social feed that never posts twice from the same angle.',
+      status: 'Merged entry \u00b7 cycle 41 \u00b7 the only PSL God on the board',
+      quote: 'You spend eleven cycles trying to beat someone and it turns out the panel was grading two halves of the same man.',
+      signature: 'A jaw shadow that survives overhead light, cold-weather tailoring, and a feed that has never posted twice from the same angle.',
       vitals: [
-        ['Height', '6\'2" · 188cm'],
-        ['Weight', '88kg at 9% body fat'],
-        ['Clavicle', '46cm — top decile for the board'],
+        ['Height', '6\'2" \u00b7 188cm'],
+        ['Weight', '86kg at 8.5% body fat'],
+        ['Clavicle', '46cm \u2014 top decile for the board'],
         ['Wingspan', '196cm'],
         ['Cycle debut', 'Cycle 1, entered #14'],
-        ['Fastest climb', '#14 to #1 in four months']
+        ['Merged at', 'Cycle 41, from #1 and #2']
       ],
-      strengths: ['Social resonance (98)', 'Body frame (98)', 'Longevity (97)', 'Height (97)'],
-      watch: ['Style & drip (92) is the only lane below 94', 'Grooming (94) has not moved in six cycles'],
+      strengths: ['Facial aesthetics (98)', 'Social resonance (98)', 'Body frame (98)', 'Grooming (97)', 'No lane below 95'],
+      watch: ['Personality (95) is now the lowest lane on the profile', 'A merged entry has no rival, and the panel has never graded longevity without one'],
       ventures: [
         { name: 'Fraudulent Labs', note: 'Supplement label. Two SKUs, both audited, both sold out through cycle 40.' },
-        { name: 'Party Athletic', note: 'Two gyms in Mumbai built around frame work rather than mirrors.' },
+        { name: 'Adhilice Skin', note: 'Four-product line \u2014 the only member venture with published ingredient lists.' },
+        { name: 'Party Athletic', note: 'Two gyms in Mumbai and a training collective in Delhi, both built around frame work.' },
         { name: 'The Party Line', note: 'Media arm. Interviews the panel refuses to publish.' }
       ],
       milestones: [
-        { cycle: 1,  note: 'Enters the board at #14 on a frame grade nobody expected from a debut.' },
-        { cycle: 9,  note: 'Takes #1 for the first time. Transformation graded 96 — generational, per the panel.' },
-        { cycle: 22, note: 'Opens the second gym. Business acumen upgraded to 96 and holds there.' },
-        { cycle: 31, note: 'Crosses the Mythic threshold at 95.0 and never falls back below it.' },
-        { cycle: 37, note: 'Ninth cycle as the only Mythic name on the board.' },
-        { cycle: 41, note: 'Holds the summit by 0.01 as Adhiraj Sharma joins the tier.' }
+        { cycle: 1,  note: 'Parth Mehta enters the board at #14 on a frame grade nobody expected from a debut.' },
+        { cycle: 4,  note: 'Adhiraj Sharma enters at #29. The panel flags the facial aesthetics grade immediately.' },
+        { cycle: 9,  note: 'Parth takes #1 for the first time. Transformation graded 96 \u2014 generational, per the panel.' },
+        { cycle: 30, note: 'Adhiraj takes #2 and begins a four-cycle chase from 2.10 points back.' },
+        { cycle: 38, note: 'Aesthetics graded 98 \u2014 the highest single grade in the quality\'s history.' },
+        { cycle: 41, note: 'The gap reaches 0.01 and the panel merges the entries. Aggregate 96.80.' }
       ],
       protocol: [
-        'Frame work three times a week — side delts and back, never the mirror muscles',
+        'Frame work three times a week \u2014 side delts and back, never the mirror muscles',
         'Fixed 5:40 wake time, seven days, no exceptions',
-        'Sunscreen and a retinoid on a schedule he has kept since cycle 4',
+        'The four-product skin protocol every night since cycle 4, never skipped, never expanded',
         'One photographed appearance per cycle, on the telephoto lens, never the ultrawide'
-      ],
-      rival: 'f002'
-    }
-  },
-  {
-    id: 'f002', name: 'Adhiraj Sharma', nickname: 'Adhilice', handle: '@adhirajsharma', region: 'Delhi, IN', age: 24,
-    joined: 'Mar 2024', movement: 1, peak: 2, weeks: 38,
-    tagline: 'One hundredth of a point off the throne. The closest the board has ever been.',
-    bio: 'A rare Fraud with no scoring weakness: Adhiraj grades above 92 in all ten qualities, which no other ranked figure has ever managed. Four consecutive cycles of gains have closed a two-point deficit to 0.01, and the panel has confirmed the margin is real rather than a rounding artefact — the business acumen lane was graded to a decimal specifically to separate them.',
-    stats: { height: 95, frame: 97, transformation: 96, aesthetics: 98, grooming: 97, drip: 96, business: 92.9, social: 96, personality: 95, longevity: 95 },
-    profile: {
-      status: 'Challenger · four straight positive cycles',
-      quote: 'He has the room. I have the face. One of those two things is fixable, and it is not the face.',
-      signature: 'The highest facial aesthetics grade the panel has ever issued, and a wardrobe that never competes with it.',
-      vitals: [
-        ['Height', '6\'1" · 185cm'],
-        ['Weight', '84kg at 8% body fat'],
-        ['Clavicle', '45cm'],
-        ['Wingspan', '191cm'],
-        ['Cycle debut', 'Cycle 4, entered #29'],
-        ['Deficit closed', '2.10 points in four cycles']
-      ],
-      strengths: ['Facial aesthetics (98)', 'Grooming (97)', 'Body frame (97)', 'No lane below 92.9'],
-      watch: ['Business acumen (92.9) is the entire gap', 'Longevity (95) still trails the incumbent'],
-      ventures: [
-        { name: 'Adhilice Skin', note: 'Four-product line. The panel notes it is the only member venture with published ingredient lists.' },
-        { name: 'Delhi Frame Club', note: 'Training collective. Small, closed, and responsible for three ranked debuts.' }
-      ],
-      milestones: [
-        { cycle: 4,  note: 'Enters at #29. Panel flags the facial aesthetics grade immediately.' },
-        { cycle: 17, note: 'First top-ten cycle. Grooming upgraded to 97 and never drops.' },
-        { cycle: 30, note: 'Takes #2 and holds it for eleven consecutive cycles.' },
-        { cycle: 38, note: 'Aesthetics graded 98 — the highest single grade in the quality\'s history.' },
-        { cycle: 41, note: 'Crosses into Mythic at 95.79. The gap to #1 is now 0.01.' }
-      ],
-      protocol: [
-        'Skin protocol every night since cycle 4, never skipped, never expanded',
-        'Two frame sessions a week, high volume, nothing to failure',
-        'Nasal breathing and fixed wake time, tracked daily',
-        'One venture at a time until it stands on its own'
-      ],
-      rival: 'f001'
+      ]
     }
   },
   {
@@ -125,7 +86,7 @@ var FRAUDS = [
       milestones: [
         { cycle: 1,  note: 'Enters at #2 with the frame grade that still stands as the record.' },
         { cycle: 3,  note: 'Takes #1 and holds it for six cycles.' },
-        { cycle: 9,  note: 'Surrenders the summit to Parth Mehta.' },
+        { cycle: 9,  note: 'Surrenders the summit to the profile that would become Adhiparth.' },
         { cycle: 41, note: 'Third consecutive negative cycle. All of it on media, none of it structural.' }
       ],
       protocol: [
@@ -325,12 +286,13 @@ var PLANS = [
 var NEWS = [
   {
     id: 'c41', cycle: 41, date: '24 August 2026', tag: 'Cycle report',
-    title: 'Locke breaks the top ten as Reyes posts the steepest fall on record',
-    lede: 'Cycle 41 delivered the widest spread of movement the board has seen since the format was fixed: four positions up for Zephyr Locke, four down for Konstantin Reyes, and a top three that refused to move at all.',
+    title: 'The panel merges its top two and the board loses its closest race',
+    lede: 'Cycle 41 will be remembered for one ruling: after eleven cycles and a margin that had narrowed to a hundredth of a point, the panel merged first and second into a single entry.',
     body: [
       'The headline of the cycle is Zephyr Locke, who converts the highest transformation grade ever recorded by the panel into a top-ten placement twenty-nine cycles after entering at #61. Nothing about the underlying profile is remarkable — the frame grades below several figures ranked beneath him — but the panel has now upgraded his transformation lane in seven consecutive cycles, and at 10% of the aggregate that compounds.',
       'At the other end, Konstantin Reyes gives back four positions after the largest conduct adjustment the panel has issued. His physical grades are untouched; personality and social resonance both fell, and two lanes moving together is worth more than any single lane can absorb.',
-      'The top three held, but only just. Parth Mehta extends his run at the summit to eleven cycles on an aggregate of 95.80 against Adhiraj Sharma\'s 95.79 — a hundredth of a point, the narrowest margin in the history of the board and the first time the panel has had to grade a lane to a decimal to separate two figures. Clav concedes nothing structurally while continuing to leak ground on media.',
+      'The summit is now one name. Parth Mehta held 95.80, Adhiraj Sharma 95.79, and after four cycles of a chase that had already forced the panel to grade a lane to a decimal, the ruling was that the board was measuring two halves of the same profile. Adhiparth Mehta Sharma enters at 96.80 — the highest aggregate ever recorded — and leads Clav by 4.10 points, the widest margin the board has carried since cycle 3.',
+      'What the merge produces is a profile with no counterpart in the archive: 98 on social resonance beside 98 on facial aesthetics, and nothing below 95. It is also the first PSL God the board has published, at 9.0.',
       'Elsewhere: Theo Marchetti and Ronan Blackwood both posted their fourth straight positive cycle, Emeric Sloan drew a second consecutive overrated flag from the community, and Hugo Vantablack set a ranking record by holding the same position for a fourth cycle running.'
     ]
   },
@@ -363,10 +325,10 @@ var NEWS = [
   },
   {
     id: 'c37', cycle: 37, date: '16 August 2026', tag: 'Cycle report',
-    title: 'The Mythic tier takes a second name as Adhiraj closes to a hundredth',
+    title: 'The Mythic tier takes a second name as the chase closes to a hundredth',
     lede: 'After nine cycles as a population of one, the Mythic tier admits a second figure — and the two are separated by less than the panel usually bothers to measure.',
     body: [
-      'Parth Mehta holds 95.80. Adhiraj Sharma crosses the 95.0 Mythic threshold at 95.79 after upgrades in six lanes, ending the longest run of solo occupancy the tier has had.',
+      'Parth Mehta holds 95.80. Adhiraj Sharma crosses the 95.0 Mythic threshold at 95.79 after upgrades in six lanes, ending the longest run of solo occupancy the tier has had. Four cycles later the panel would rule that it had been grading one profile in two halves.',
       'The panel notes that the Mythic threshold has never been adjusted and will not be. A tier that admits three or four figures per cycle stops describing anything — two, separated by a hundredth, describes a great deal.'
     ]
   },

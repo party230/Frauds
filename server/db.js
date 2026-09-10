@@ -176,6 +176,13 @@ function seed(db) {
       baseline_rise=excluded.baseline_rise, baseline_over=excluded.baseline_over
   `);
 
+  /* an entry that leaves the dataset leaves the board — votes, grades,
+     watchlist rows and appeals against it cascade away with it */
+  const keep = new Set(FRAUDS.map(f => f.id));
+  for (const row of db.prepare('SELECT id FROM frauds').all()) {
+    if (!keep.has(row.id)) db.prepare('DELETE FROM frauds WHERE id = ?').run(row.id);
+  }
+
   for (const f of FRAUDS) {
     const base = dataset.baselineSentiment(f, CATEGORIES);
     up.run(f.id, f.name, f.nickname || '', f.handle, f.region, f.age, f.joined, f.movement, f.peak, f.weeks,

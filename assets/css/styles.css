@@ -1256,3 +1256,43 @@ input[type=range]:focus-visible { border-color: var(--gold); }
 .rb-txt { font-size: 14px; color: var(--txt-dim); flex: 1; min-width: 200px; }
 .rb-txt strong { color: var(--txt); }
 .rb-go { font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); }
+
+/* ---------- the merger ---------- */
+.rv-heads.halves { grid-template-columns: 1fr 1fr; position: relative; }
+.rv-head.archived { opacity: .92; }
+.rv-head.archived .rv-rank { font-size: 22px; letter-spacing: .1em; text-transform: uppercase; font-family: var(--mono); color: var(--txt-faint); }
+.rv-note { font-size: 13px; color: var(--txt-dim); margin: 16px 0 0; }
+.rv-note strong { color: var(--gold); }
+
+.merge-arrow {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center;
+  background: var(--bg); border: 1px solid var(--gold); color: var(--gold);
+  font-family: var(--display); font-size: 26px; z-index: 2;
+}
+@media (max-width: 800px) { .merge-arrow { display: none; } }
+
+.merged-head { max-width: 560px; margin: 0 auto; }
+.merged-head .btn { margin-top: 18px; }
+
+.merge-table { display: grid; gap: 2px; }
+.merge-row {
+  display: grid; grid-template-columns: 62px 1fr 62px 72px; gap: 12px; align-items: center;
+  padding: 10px 8px; border-radius: var(--radius);
+}
+.merge-row:hover { background: var(--panel-2); }
+.merge-head {
+  font-family: var(--mono); font-size: 9px; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--txt-faint); border-bottom: 1px solid var(--line);
+  border-radius: 0; margin-bottom: 4px;
+}
+.merge-head span:first-child, .merge-head span:nth-child(3) { text-align: center; }
+.merge-head span:last-child { text-align: right; }
+.mr-v { text-align: center; font-family: var(--mono); font-size: 13px; color: var(--txt-faint); }
+.mr-v.kept { color: var(--txt); }
+.mr-l { font-size: 13px; color: var(--txt-dim); text-align: center; }
+.mr-m { text-align: right; font-family: var(--display); font-size: 22px; color: var(--gold); }
+@media (max-width: 620px) {
+  .merge-row { grid-template-columns: 46px 1fr 46px 54px; gap: 8px; }
+  .mr-l { font-size: 12px; }
+}

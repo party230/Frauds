@@ -18,7 +18,7 @@ App.ready(() => {
   const err = document.getElementById('pay-error');
 
   /* free plan has nothing to buy */
-  if (!plan.price) { location.replace('membership.html'); return; }
+  if (!plan.price) { navigate('membership.html'); return; }
 
   /* signing in is required before a plan can be attached to anything */
   if (!Store.isSignedIn()) {

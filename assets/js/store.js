@@ -64,11 +64,14 @@ const Store = (() => {
     get offline() { return offline; },
     get: () => state,
     on(fn) { listeners.push(fn); return fn; },
+    resetListeners() { listeners.length = 0; },
 
     /* ---------- boot ---------- */
     async boot() {
       try {
         const data = await Api.get('/bootstrap');
+        /* a host that answers unknown paths with its own page is not a backend */
+        if (!data || !Array.isArray(data.frauds) || !data.frauds.length) throw new Error('no backend');
         applyDataset(data);
         const me = await Api.get('/auth/me');
         apply(me.user ? me : null);

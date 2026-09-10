@@ -13,8 +13,18 @@ const NAV = [
   { href: 'membership.html', label: 'Membership' }
 ];
 
+/* The multi-page site reads the filename; a bundled single-file build sets
+   window.__PAGE__ instead. */
 function currentPage() {
+  if (window.__PAGE__) return window.__PAGE__;
   return (location.pathname.split('/').pop() || 'index.html').toLowerCase();
+}
+
+/* Every in-app navigation goes through here so a bundled build can route it
+   without a page load. */
+function navigate(url) {
+  if (window.__NAVIGATE__) return window.__NAVIGATE__(url);
+  location.href = url;
 }
 
 function renderHeader() {
@@ -75,7 +85,7 @@ function renderHeader() {
     await Store.signOut();
     toast('Signed out.');
     renderHeader();
-    if (['account.html', 'checkout.html', 'submit.html'].indexOf(currentPage()) > -1) location.href = 'index.html';
+    if (['account.html', 'checkout.html', 'submit.html'].indexOf(currentPage()) > -1) navigate('index.html');
   }));
 
   renderTicker();
@@ -125,7 +135,7 @@ function renderFooter() {
             <a href="rankings.html?sort=movers">Biggest risers</a>
             <a href="rankings.html?sort=fallers">Biggest fallers</a>
             <a href="compare.html">Head to head</a>
-            <a href="rivalry.html">The rivalry: Party vs Adhilice</a>
+            <a href="rivalry.html">The merger: Party + Adhilice</a>
           </div>
           <div>
             <h4>How it works</h4>
@@ -306,7 +316,6 @@ function watchButton(fraud, withLabel) {
  */
 const Compare = (() => {
   const picks = [];
-  const watchers = [];
 
   function tray() {
     let el = document.querySelector('.compare-tray');
@@ -344,9 +353,18 @@ const Compare = (() => {
     el.querySelector('[data-clear]').addEventListener('click', () => Compare.clear());
   }
 
+  /* repaint every compare button currently in the document */
+  function repaint() {
+    document.querySelectorAll('[data-cmp]').forEach(b => {
+      const on = picks.indexOf(b.dataset.cmp) > -1;
+      b.classList.toggle('on', on);
+      b.setAttribute('aria-pressed', String(on));
+    });
+  }
+
   return {
     has: id => picks.indexOf(id) > -1,
-    on(fn) { watchers.push(fn); },
+    repaint: repaint,
 
     toggle(id) {
       const i = picks.indexOf(id);
@@ -356,14 +374,14 @@ const Compare = (() => {
         if (picks.length > 2) picks.shift();          /* a third pick replaces the oldest */
       }
       draw();
-      watchers.forEach(fn => fn(picks.slice()));
+      repaint();
       return picks.indexOf(id) > -1;
     },
 
     clear() {
       picks.length = 0;
       draw();
-      watchers.forEach(fn => fn([]));
+      repaint();
     }
   };
 })();
@@ -371,21 +389,15 @@ const Compare = (() => {
 function compareButton(fraud) {
   const b = document.createElement('button');
   b.type = 'button';
-  const paint = () => {
-    const on = Compare.has(fraud.id);
-    b.className = 'cmp' + (on ? ' on' : '');
-    b.title = on ? 'Remove from the comparison' : 'Compare ' + fraud.name;
-    b.setAttribute('aria-pressed', String(on));
-    b.innerHTML = '&#8646;';
-  };
-  paint();
-  Compare.on(paint);
+  b.dataset.cmp = fraud.id;
+  b.className = 'cmp' + (Compare.has(fraud.id) ? ' on' : '');
+  b.title = 'Compare ' + fraud.name;
+  b.setAttribute('aria-pressed', String(Compare.has(fraud.id)));
+  b.innerHTML = '&#8646;';
   b.addEventListener('click', ev => {
     ev.stopPropagation();
     ev.preventDefault();
-    const on = Compare.toggle(fraud.id);
-    paint();
-    if (on) toast(fraud.name + ' added to the comparison.');
+    if (Compare.toggle(fraud.id)) toast(fraud.name + ' added to the comparison.');
   });
   return b;
 }
@@ -397,7 +409,7 @@ function boardRow(f, opts) {
   row.className = 'row' + (f.rank <= 3 ? ' top3' : '');
   row.tabIndex = 0;
   row.setAttribute('role', 'link');
-  const go = () => { location.href = 'profile.html?id=' + f.id; };
+  const go = () => { navigate('profile.html?id=' + f.id); };
   row.addEventListener('click', go);
   row.addEventListener('keydown', ev => { if (ev.key === 'Enter') go(); });
 
@@ -457,7 +469,7 @@ function planCardMarkup(p) {
 const PAGE_TARGETS = [
   { label: 'The full board', href: 'rankings.html', kind: 'Page' },
   { label: 'Head to head — compare any two', href: 'compare.html', kind: 'Page' },
-  { label: 'The rivalry: Party vs Adhilice', href: 'rivalry.html', kind: 'Page' },
+  { label: 'The merger: Party + Adhilice', href: 'rivalry.html', kind: 'Page' },
   { label: 'The Fraud Test', href: 'test.html', kind: 'Page' },
   { label: 'Looksmax desk', href: 'looksmax.html', kind: 'Page' },
   { label: 'Cycle reports', href: 'news.html', kind: 'Page' },
@@ -542,7 +554,7 @@ function openPalette() {
     if (ev.key === 'Escape') { ev.preventDefault(); close(); }
     else if (ev.key === 'ArrowDown') { ev.preventDefault(); move(1); }
     else if (ev.key === 'ArrowUp') { ev.preventDefault(); move(-1); }
-    else if (ev.key === 'Enter' && items[active]) { ev.preventDefault(); location.href = items[active].href; }
+    else if (ev.key === 'Enter' && items[active]) { ev.preventDefault(); close(); navigate(items[active].href); }
   }
 
   input.addEventListener('input', () => { active = 0; draw(); });
