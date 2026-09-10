@@ -208,7 +208,9 @@ ${router}
 
 fs.mkdirSync(OUT_DIR, { recursive: true });
 fs.writeFileSync(OUT, out);
+/* the same file as index.html, so dropping dist/ on any static host serves it at the root */
+fs.writeFileSync(path.join(OUT_DIR, 'index.html'), out);
 
 const kb = n => (n / 1024).toFixed(0) + 'KB';
-console.log('built  ' + path.relative(ROOT, OUT));
+console.log('built  ' + path.relative(ROOT, OUT) + '  (+ dist/index.html)');
 console.log('pages  ' + bodies.length + ' · scripts ' + scripts.length + ' · size ' + kb(out.length));
