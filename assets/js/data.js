@@ -18,11 +18,11 @@ var CATEGORIES = [
 
 var FRAUDS = [
   {
-    id: 'f001', name: 'Adhiparth Mehta Sharma', nickname: 'Adhiparty', handle: '@adhiparty',
+    id: 'f001', name: 'AdhiParth Mehta Sharma', nickname: 'Adhiparty', handle: '@adhiparty',
     region: 'Mumbai \u00b7 Delhi, IN', age: 26,
     joined: 'Jan 2024', movement: 0, peak: 1, weeks: 41,
     tagline: 'The merger. Two profiles, one entry, and the widest lead the board has ever carried.',
-    bio: 'For eleven cycles the summit was a two-man argument decided by a hundredth of a point. In cycle 41 the panel stopped arguing and merged the entries: Adhiparth Mehta Sharma is what Parth Mehta and Adhiraj Sharma amount to when neither has to concede a lane. He takes the room from one half and the face from the other \u2014 a 98 on social resonance beside a 98 on facial aesthetics, which no single profile in the history of the board has held at once. The result grades 96.80, the highest aggregate ever recorded, and leads second place by more than four points.',
+    bio: 'For eleven cycles the summit was a two-man argument decided by a hundredth of a point. In cycle 41 the panel stopped arguing and merged the entries: AdhiParth Mehta Sharma is what Parth Mehta and Adhiraj Sharma amount to when neither has to concede a lane. He takes the room from one half and the face from the other \u2014 a 98 on social resonance beside a 98 on facial aesthetics, which no single profile in the history of the board has held at once. The result grades 96.80, the highest aggregate ever recorded, and leads second place by more than four points.',
     stats: { height: 97, frame: 98, transformation: 96, aesthetics: 98, grooming: 97, drip: 96, business: 96, social: 98, personality: 95, longevity: 97 },
     profile: {
       status: 'Merged entry \u00b7 cycle 41 \u00b7 the only PSL God on the board',
@@ -86,7 +86,7 @@ var FRAUDS = [
       milestones: [
         { cycle: 1,  note: 'Enters at #2 with the frame grade that still stands as the record.' },
         { cycle: 3,  note: 'Takes #1 and holds it for six cycles.' },
-        { cycle: 9,  note: 'Surrenders the summit to the profile that would become Adhiparth.' },
+        { cycle: 9,  note: 'Surrenders the summit to the profile that would become AdhiParth.' },
         { cycle: 41, note: 'Third consecutive negative cycle. All of it on media, none of it structural.' }
       ],
       protocol: [
@@ -291,7 +291,7 @@ var NEWS = [
     body: [
       'The headline of the cycle is Zephyr Locke, who converts the highest transformation grade ever recorded by the panel into a top-ten placement twenty-nine cycles after entering at #61. Nothing about the underlying profile is remarkable — the frame grades below several figures ranked beneath him — but the panel has now upgraded his transformation lane in seven consecutive cycles, and at 10% of the aggregate that compounds.',
       'At the other end, Konstantin Reyes gives back four positions after the largest conduct adjustment the panel has issued. His physical grades are untouched; personality and social resonance both fell, and two lanes moving together is worth more than any single lane can absorb.',
-      'The summit is now one name. Parth Mehta held 95.80, Adhiraj Sharma 95.79, and after four cycles of a chase that had already forced the panel to grade a lane to a decimal, the ruling was that the board was measuring two halves of the same profile. Adhiparth Mehta Sharma enters at 96.80 — the highest aggregate ever recorded — and leads Clav by 4.10 points, the widest margin the board has carried since cycle 3.',
+      'The summit is now one name. Parth Mehta held 95.80, Adhiraj Sharma 95.79, and after four cycles of a chase that had already forced the panel to grade a lane to a decimal, the ruling was that the board was measuring two halves of the same profile. AdhiParth Mehta Sharma enters at 96.80 — the highest aggregate ever recorded — and leads Clav by 4.10 points, the widest margin the board has carried since cycle 3.',
       'What the merge produces is a profile with no counterpart in the archive: 98 on social resonance beside 98 on facial aesthetics, and nothing below 95. It is also the first PSL God the board has published, at 9.0.',
       'Elsewhere: Theo Marchetti and Ronan Blackwood both posted their fourth straight positive cycle, Emeric Sloan drew a second consecutive overrated flag from the community, and Hugo Vantablack set a ranking record by holding the same position for a fourth cycle running.'
     ]
