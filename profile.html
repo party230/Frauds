@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/styles.css">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%2307080b'/><text x='16' y='23' font-size='20' font-family='Arial' font-weight='bold' text-anchor='middle' fill='%23d9b25c'>F</text></svg>">
 <title>Profile | Official Fraud Rankings</title>
@@ -14,86 +14,94 @@
 <body>
 <div id="site-header"></div>
 <main>
-<section id="profile">
+<section id="profile" class="magazine">
   <div class="wrap">
     <a class="crumb" href="rankings.html">&larr; The full board</a>
     <div id="status-line" class="status-line"></div>
-    <div class="profile-head" id="profile-head"></div>
-    <div class="readings" id="readings"></div>
-    <div class="card quote-card" id="quote-card"></div>
   </div>
 
-  <div class="wrap grid-2" style="align-items:start">
-    <div style="display:grid;gap:16px">
-      <div class="card">
+  <header class="wrap mag-head" id="profile-head"></header>
+
+  <div class="wrap">
+    <div class="mag-figures" id="readings"></div>
+    <div class="mag-quote" id="quote-card"></div>
+  </div>
+
+  <div class="wrap mag-grid">
+    <main class="mag-main">
+      <section class="card">
         <div class="num-tag">Quality breakdown &middot; 10% each</div>
         <h3>Panel grades</h3>
-        <div class="bars" id="bars" style="margin-top:18px"></div>
+        <div class="bars" id="bars" style="margin-top:20px"></div>
         <p class="form-note" style="margin-top:16px">The marker on each track is the board average for that quality.</p>
-      </div>
-      <div class="card">
+      </section>
+
+      <section class="card">
         <div class="num-tag">Last twelve cycles</div>
         <h3>Rank history</h3>
         <div id="spark" style="margin-top:16px"></div>
-      </div>
+      </section>
 
-      <div class="card optional-card">
-        <div class="num-tag">Lane by lane</div>
-        <h3>What carries it, what the panel watches</h3>
-        <div class="lanes" id="lanes" style="margin-top:16px"></div>
-      </div>
-
-      <div class="card optional-card">
+      <section class="card optional-card">
         <div class="num-tag">On the record</div>
         <h3>Cycle history</h3>
-        <div class="timeline" id="timeline" style="margin-top:16px"></div>
-      </div>
-    </div>
+        <div class="timeline" id="timeline" style="margin-top:18px"></div>
+      </section>
 
-    <div style="display:grid;gap:16px">
-      <div class="card">
-        <div class="num-tag">Panel note</div>
-        <h3 id="tagline"></h3>
-        <p id="bio"></p>
-      </div>
-      <div class="card">
-        <div class="num-tag">Record</div>
-        <h3>Board history</h3>
-        <div class="kv" id="kv" style="margin-top:8px"></div>
-      </div>
-
-      <div class="card optional-card">
-        <div class="num-tag">Vitals</div>
-        <h3>The measurements</h3>
-        <div id="vitals" style="margin-top:8px"></div>
-      </div>
-
-      <div class="card rival-card" id="rival-card"></div>
-
-      <div class="card optional-card">
-        <div class="num-tag">Ventures</div>
-        <h3>Outside the board</h3>
-        <div class="ventures" id="ventures" style="margin-top:12px"></div>
-      </div>
-
-      <div class="card optional-card">
-        <div class="num-tag">Daily protocol</div>
-        <h3>What he actually does</h3>
-        <div id="protocol" style="margin-top:12px"></div>
-      </div>
-      <div class="card">
+      <section class="card optional-card">
+        <div class="num-tag">Lane by lane</div>
+        <h3>What carries it, what the panel watches</h3>
+        <div class="lanes" id="lanes" style="margin-top:18px"></div>
+      </section>
+      <section class="card keep-card">
         <div class="num-tag">Member grades</div>
         <h3>What the verse says</h3>
         <p style="margin-bottom:16px">The panel grades the ten qualities. Members grade the whole man. Both numbers are published.</p>
         <div id="grade-host"></div>
-      </div>
-      <div class="card">
+      </section>
+
+      <section class="card keep-card">
         <div class="num-tag">Community</div>
         <h3>Cast your vote</h3>
         <p style="margin-bottom:14px">Rising star or overrated? Sustained sentiment triggers a panel review of personality and social resonance together.</p>
         <div id="vote-host"></div>
-      </div>
-    </div>
+      </section>
+    </main>
+
+    <aside class="mag-rail">
+      <section class="card">
+        <div class="num-tag">Panel note</div>
+        <h3 id="tagline"></h3>
+        <p id="bio"></p>
+      </section>
+
+      <section class="card">
+        <div class="num-tag">Record</div>
+        <h3>Board history</h3>
+        <div class="kv" id="kv" style="margin-top:10px"></div>
+      </section>
+
+      <section class="card optional-card">
+        <div class="num-tag">Vitals</div>
+        <h3>The measurements</h3>
+        <div id="vitals" style="margin-top:10px"></div>
+      </section>
+
+      <section class="card rival-card" id="rival-card"></section>
+
+      <section class="card optional-card">
+        <div class="num-tag">Ventures</div>
+        <h3>Outside the board</h3>
+        <div class="ventures" id="ventures" style="margin-top:12px"></div>
+      </section>
+
+      <section class="card optional-card">
+        <div class="num-tag">Daily protocol</div>
+        <h3>What he actually does</h3>
+        <div id="protocol" style="margin-top:12px"></div>
+      </section>
+
+    </aside>
   </div>
 
   <div class="wrap section" style="padding-bottom:20px">

@@ -11,38 +11,47 @@ App.ready(() => {
   const fraud = (id && byId(id)) || field[0];
   document.title = fraud.name + ' | Official Fraud Rankings';
 
-  /* ----- header ----- */
+  /* ----- masthead ----- */
   const head = document.getElementById('profile-head');
-  head.appendChild(avatar(fraud, 'av-lg'));
+  const psl = pslOf(fraud), appeal = appealOf(fraud);
 
-  const meta = document.createElement('div');
-  meta.className = 'meta';
-  meta.innerHTML = `
-    <div class="eyebrow">Rank #${fraud.rank} of ${field.length} · Cycle ${CURRENT_CYCLE}</div>
-    <h1>${fraud.name}</h1>
-    ${fraud.nickname ? `<div class="nick-line">the verse calls him &ldquo;${fraud.nickname}&rdquo;</div>` : ''}
-    <div class="handle">${fraud.handle} · ${fraud.region} · ${fraud.age}</div>
-    <div class="tags">
-      <span class="tier tier-${fraud.tier.key}">${fraud.tier.label}</span>
-      <span class="tier tier-prospect">${movementLabel(fraud.movement)}</span>
-      <span class="tier tier-prospect">Peak #${fraud.peak}</span>
-      <span class="tier tier-prospect">${fraud.weeks} cycles ranked</span>
-      <span class="tier tier-mythic">PSL ${pslOf(fraud).toFixed(1)} · ${pslLabel(pslOf(fraud))}</span>
-      <span class="tier tier-elite">Appeal ${appealOf(fraud).toFixed(1)}</span>
+  head.innerHTML = `
+    <div class="mag-numeral" aria-hidden="true">${String(fraud.rank).padStart(2, '0')}</div>
+    <div class="mag-lead">
+      <div class="mag-eyebrow">Rank #${fraud.rank} of ${field.length} &middot; Cycle ${CURRENT_CYCLE}</div>
+      <h1 class="mag-name">${fraud.name}</h1>
+      ${fraud.nickname ? `<div class="mag-nick">&ldquo;${fraud.nickname}&rdquo;</div>` : ''}
+      <div class="mag-sub">${fraud.handle} &middot; ${fraud.region} &middot; ${fraud.age} &middot; ${fraud.weeks} cycles ranked</div>
+      <div class="profile-actions"></div>
     </div>
-    <div class="profile-actions"></div>`;
-  head.appendChild(meta);
+    <div class="mag-portrait"></div>`;
 
-  const actions = meta.querySelector('.profile-actions');
+  head.querySelector('.mag-portrait').appendChild(avatar(fraud, 'av-xl'));
+
+  const actions = head.querySelector('.profile-actions');
   actions.appendChild(watchButton(fraud, true));
   actions.insertAdjacentHTML('beforeend', `
     <a class="btn btn-sm" href="compare.html?a=${fraud.id}">Compare head to head</a>
     <a class="btn btn-sm" href="contact.html#appeal">Appeal a grade</a>`);
 
-  const big = document.createElement('div');
-  big.className = 'big-score';
-  big.innerHTML = `<div class="v">${fmt(fraud.score)}</div><div class="l">Aggregate grade</div>`;
-  head.appendChild(big);
+  /* ----- the figures strip ----- */
+  const pslRank = field.slice().sort((x, y) => pslOf(y) - pslOf(x)).findIndex(f => f.id === fraud.id) + 1;
+  const appealRank = field.slice().sort((x, y) => appealOf(y) - appealOf(x)).findIndex(f => f.id === fraud.id) + 1;
+
+  const figures = document.getElementById('readings');
+  figures.innerHTML = [
+    { v: fmt(fraud.score), l: 'Aggregate', r: 'Flat mean of ten', big: true },
+    { v: fraud.tier.label, l: 'Tier', r: fraud.tier.key === 'mythic' ? '95.00 and above' : 'By aggregate', word: true },
+    { v: psl.toFixed(1), l: 'PSL', r: '#' + pslRank + ' on structure &middot; ' + pslLabel(psl) },
+    { v: appeal.toFixed(1), l: 'Appeal', r: '#' + appealRank + ' in a room' },
+    { v: movementLabel(fraud.movement), l: 'This cycle', r: 'Peak #' + fraud.peak, word: true }
+  ].map(f => `
+    <div class="fig${f.big ? ' fig-lead' : ''}">
+      <div class="fig-v${f.word ? ' fig-word' : ''}">${f.v}</div>
+      <div class="fig-l">${f.l}</div>
+      <div class="fig-r">${f.r}</div>
+    </div>`).join('');
+  figures.classList.add('show');
 
   /* ----- quality breakdown ----- */
   const bars = document.getElementById('bars');
@@ -202,29 +211,11 @@ function renderDossier(fraud, field) {
   if (quote && pr.quote) {
     quote.innerHTML = `
       <blockquote class="pull-quote">${pr.quote}</blockquote>
-      <div class="quote-by">&mdash; ${fraud.name}${fraud.nickname ? ', &ldquo;' + fraud.nickname + '&rdquo;' : ''}</div>
-      ${pr.signature ? `<p class="sig-line">${pr.signature}</p>` : ''}`;
-    quote.classList.add('show');
-  }
-
-  const readings = document.getElementById('readings');
-  if (readings) {
-    const psl = pslOf(fraud), appeal = appealOf(fraud);
-    const pslRank = field.slice().sort((a, b) => pslOf(b) - pslOf(a)).findIndex(f => f.id === fraud.id) + 1;
-    const appealRank = field.slice().sort((a, b) => appealOf(b) - appealOf(a)).findIndex(f => f.id === fraud.id) + 1;
-
-    readings.innerHTML = `
-      <div class="reading">
-        <div class="reading-v">${psl.toFixed(1)}</div>
-        <div class="reading-l">PSL &middot; ${pslLabel(psl)}</div>
-        <div class="reading-r">#${pslRank} of ${field.length} on structure</div>
-      </div>
-      <div class="reading">
-        <div class="reading-v">${appeal.toFixed(1)}</div>
-        <div class="reading-l">Appeal</div>
-        <div class="reading-r">#${appealRank} of ${field.length} in a room</div>
+      <div class="quote-foot">
+        <span class="quote-by">${fraud.name}${fraud.nickname ? ', &ldquo;' + fraud.nickname + '&rdquo;' : ''}</span>
+        ${pr.signature ? `<p class="sig-line">${pr.signature}</p>` : ''}
       </div>`;
-    readings.classList.add('show');
+    quote.classList.add('show');
   }
 
   const vitals = document.getElementById('vitals');
