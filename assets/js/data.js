@@ -98,17 +98,17 @@ var FRAUDS = [
     }
   },
   {
-    id: 'f004', name: 'Rocco Delaine', handle: '@roccodelaine', region: 'Milan, IT', age: 26,
+    id: 'f004', name: 'Aryansh Dhir', nickname: 'arydd', handle: '@arydd', region: 'Gurgaon, IN', age: 26,
     joined: 'Feb 2024', movement: 2, peak: 4, weeks: 36,
     tagline: 'Best-dressed Fraud on the board, four cycles running.',
-    bio: 'Rocco converts a modest frame grade into elite placement through presentation. Perfect-ten territory on style, and the panel notes his grooming has not dipped below 95 since he entered.',
+    bio: 'Aryansh converts a modest frame grade into elite placement through presentation alone. The 99 on style is the highest the panel has issued in the lane, his grooming has not dipped below 95 since the day he entered, and he is the only figure in the top five carrying a height grade under 90.',
     stats: { height: 88, frame: 90, transformation: 92, aesthetics: 96, grooming: 98, drip: 99, business: 89, social: 92, personality: 90, longevity: 88 }
   },
   {
-    id: 'f005', name: 'Kaine Rutherford', handle: '@kainerford', region: 'Sydney, AU', age: 31,
+    id: 'f005', name: 'Ranvijay Singh Yadav', nickname: 'ranviGAY', handle: '@ranvijay', region: 'Lucknow, IN', age: 31,
     joined: 'Jan 2024', movement: -1, peak: 2, weeks: 41,
     tagline: 'The businessman. Highest commercial grade in the verse.',
-    bio: 'Nobody monetises the verse like Kaine. Two exits, a clothing label and the largest ambassador deal in ranking history. Age has begun to shave points off transformation, but longevity keeps him fixed in the top ten.',
+    bio: 'Nobody monetises the verse like Ranvijay. Two exits, a clothing label and the largest ambassador deal in ranking history, which is what a 99 on business acumen looks like in practice. Age has begun to shave points off transformation, but a 96 on longevity keeps him fixed in the top five.',
     stats: { height: 91, frame: 89, transformation: 84, aesthetics: 88, grooming: 92, drip: 93, business: 99, social: 95, personality: 94, longevity: 96 }
   },
   {
@@ -133,10 +133,10 @@ var FRAUDS = [
     stats: { height: 90, frame: 91, transformation: 90, aesthetics: 95, grooming: 93, drip: 92, business: 84, social: 87, personality: 88, longevity: 84 }
   },
   {
-    id: 'f009', name: 'Vaughn Sterling', handle: '@vaughnsterling', region: 'New York, NY', age: 30,
+    id: 'f009', name: 'Samarjeet Singh', nickname: 'samu', handle: '@samu', region: 'Chandigarh, IN', age: 30,
     joined: 'Jan 2024', movement: 1, peak: 7, weeks: 41,
     tagline: 'The most consistent grade on the board.',
-    bio: 'Vaughn has moved no more than two positions in any single cycle since the rankings began. Reviewers describe the profile as the definition of a floor: nothing spectacular, nothing that ever slips.',
+    bio: 'Samarjeet has moved no more than two positions in any single cycle since the rankings began, and his 98 on longevity is the highest figure in the quality. Reviewers describe the profile as the definition of a floor: nothing spectacular, nothing that ever slips.',
     stats: { height: 92, frame: 90, transformation: 85, aesthetics: 90, grooming: 91, drip: 89, business: 91, social: 86, personality: 91, longevity: 98 }
   },
   {
