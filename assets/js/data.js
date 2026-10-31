@@ -140,6 +140,13 @@ var FRAUDS = [
     stats: { height: 92, frame: 90, transformation: 85, aesthetics: 90, grooming: 91, drip: 89, business: 91, social: 86, personality: 91, longevity: 98 }
   },
   {
+    id: 'f025', name: 'Atharv Dabwal', nickname: 'Papita', handle: '@papita', region: 'Dehradun, IN', age: 25,
+    joined: 'Sep 2024', movement: 7, peak: 6, weeks: 14,
+    tagline: 'Debuts inside the top six. Nobody has entered this high.',
+    bio: 'Fourteen cycles on the board and already past figures who have been ranked since the first day. Atharv is graded 94 on transformation, the second-highest active figure in the lane, and the panel notes the arc has not flattened once. Height at 86 is the lowest grade in the top ten and longevity at 86 is the only other mark under 88 \u2014 which is to say the ceiling here is not yet known.',
+    stats: { height: 86, frame: 90, transformation: 94, aesthetics: 93, grooming: 92, drip: 90, business: 88, social: 92, personality: 91, longevity: 86 }
+  },
+  {
     id: 'f010', name: 'Elias Crowne', handle: '@eliascrowne', region: 'Dubai, AE', age: 33,
     joined: 'Feb 2024', movement: 0, peak: 8, weeks: 37,
     tagline: 'Old guard. Still grading elite on composure.',
@@ -292,6 +299,7 @@ var NEWS = [
       'The headline of the cycle is Zephyr Locke, who converts the highest transformation grade ever recorded by the panel into a top-ten placement twenty-nine cycles after entering at #61. Nothing about the underlying profile is remarkable — the frame grades below several figures ranked beneath him — but the panel has now upgraded his transformation lane in seven consecutive cycles, and at 10% of the aggregate that compounds.',
       'At the other end, Konstantin Reyes gives back four positions after the largest conduct adjustment the panel has issued. His physical grades are untouched; personality and social resonance both fell, and two lanes moving together is worth more than any single lane can absorb.',
       'The summit is now one name. Parth Mehta held 95.80, Adhiraj Sharma 95.79, and after four cycles of a chase that had already forced the panel to grade a lane to a decimal, the ruling was that the board was measuring two halves of the same profile. AdhiParth Mehta Sharma enters at 96.80 — the highest aggregate ever recorded — and leads Clav by 4.10 points, the widest margin the board has carried since cycle 3.',
+      'Beneath the ruling, the cycle produced the highest debut placement the board has recorded: Atharv Dabwal enters at #6 on a transformation grade of 94 in only his fourteenth cycle, pushing Zephyr Locke and everyone below him down a place.',
       'What the merge produces is a profile with no counterpart in the archive: 98 on social resonance beside 98 on facial aesthetics, and nothing below 95. It is also the first PSL God the board has published, at 9.0.',
       'Elsewhere: Theo Marchetti and Ronan Blackwood both posted their fourth straight positive cycle, Emeric Sloan drew a second consecutive overrated flag from the community, and Hugo Vantablack set a ranking record by holding the same position for a fourth cycle running.'
     ]
